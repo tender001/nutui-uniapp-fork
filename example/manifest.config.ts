@@ -8,7 +8,7 @@ export default defineManifestConfig({
   'versionCode': '100',
   'transformPx': false,
   'mp-weixin': {
-    appid: 'wxd4e6c25454525507',
+    appid: 'wx1b28de72b7e61f96',
     setting: {
       urlCheck: false,
       es6: true,

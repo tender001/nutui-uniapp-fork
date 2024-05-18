@@ -53,7 +53,7 @@ export default defineConfig({
     preflightRoot: isMp ? ['page,::before,::after'] : undefined,
     colors: {
       context: 'rgb(var(--ano-c-context))',
-      primary: '#fa2c19',
+      primary: '#3bc169',
       success: 'rgba(39, 197, 48,1)',
       info: 'rgba(73, 101, 242,1)',
       warning: 'rgb(255, 190, 13)',
