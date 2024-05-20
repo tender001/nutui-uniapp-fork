@@ -115,7 +115,7 @@ watch(() => formData, (val) => {
             @choose="handleChooseDate" @select="handleSelectDate" />
         </nut-form-item>
         <!-- <nut-cell-group> -->
-          <!-- <pre>2222{{ formData.city }}{{ formData.date }}</pre> -->
+          <pre>2222{{ formData.city }}{{ formData.date }}</pre>
           <nut-form-item label="地区" prop="city" :show-error-message="false">
             <Address v-model="formData.city" ></Address>
           </nut-form-item>

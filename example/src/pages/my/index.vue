@@ -84,9 +84,9 @@
   <script setup lang="ts">
   import { onShow } from '@dcloudio/uni-app'
   import { computed } from 'vue'
-  // import { useUserStore } from '@/store/user'
-  // import { removeToken, hiddenPhone, getToken } from '@/packages/utils'
-  // import { logout } from '@/api'
+  import { useUserStore } from '@/store/user'
+  import { removeToken, hiddenPhone, getToken } from '@/packages/utils'
+  import { logout } from '@/api'
   
   onShow(() => {
     console.log('My Show')
@@ -96,21 +96,21 @@
     // }
   })
   
-  // const userStore = useUserStore()
-    const userStore = {Userinfo:{name:'',phone:''}}
-  const userinfo = computed(() => userStore.Userinfo)
+  const userStore = useUserStore()
+    // const userStore = {Userinfo:{name:'',phone:''}}
+  const userinfo = computed(() => userStore.userinfo)
   
   const onClickMenu = (path: string) => {
     uni.navigateTo({ url: path })
   }
   
   const onLogout = async () => {
-    // const res = await logout()
-    // if (!res || res.code !== 0) return
-    // uni.showToast({ title: '退出登录成功' })
-    // uni.navigateTo({ url: '/pages/login/index' })
-    // removeToken()
-    // userStore.cleanup()
+    const res = await logout()
+    if (!res || res.code !== 0) return
+    uni.showToast({ title: '退出登录成功' })
+    uni.navigateTo({ url: '/pages/login/index' })
+    removeToken()
+    userStore.cleanup()
   }
   </script>
   

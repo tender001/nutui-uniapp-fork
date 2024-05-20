@@ -5,7 +5,7 @@
     custom-address-title="请选择所在地区"></nut-address>
 </template>
 <script setup lang="ts">
-import { ref, reactive,defineEmits } from 'vue'
+import { ref, reactive } from 'vue'
 const showPopup = ref(false)
 
 const props = defineProps({
