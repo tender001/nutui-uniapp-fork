@@ -6,6 +6,10 @@
       "vite/client",
       "@dcloudio/types",
       "@uni-helper/uni-app-types"
-    ]
+    ],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@packages/*": ["./src/packages/*"]
+    }
   }
 }

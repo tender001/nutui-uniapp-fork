@@ -35,6 +35,7 @@ onHide(() => {
 
 <style lang="scss">
 @import 'nutui-uniapp/styles/index';
+// @import './packages/styles/index';
 
 /* #ifdef H5 */
 html.dark {

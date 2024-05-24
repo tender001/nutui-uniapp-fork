@@ -1,12 +1,14 @@
 @import "nutui-uniapp/styles/variables.scss";
+// @import './mixins';
 
 :root, page {
-  --nut-primary-color: #0077FA;
-  --nut-primary-color-end: #2997ff;
+  --nut-primary-color: #3ece4c;
+  --nut-primary-color-end: #48e96d;
+  --nut-success-color: #26BF26;
   --nut-success-color: #26BF26;
   --nut-danger-color: #FA2C19;
   --nut-warning-color: #FF9E0D;
-  --nut-title-color: #1a1a1a;
+  --nut-title-color: #000;
   --nut-title-color2: #666666;
   --nut-text-color: #808080;
   --nut-text-color-1: #323233;
@@ -17,18 +19,19 @@
   --nut-help-color: #f5f5f5;
   --nut-disable-color: #cccccc;
   --nut-required-color: #fa2c19
+  --nut-nav-bg-color: #a7ffa9
 }
 
 // scss vars
-$bg-color: #f5f5f5;
-$primary-color: var(--nut-primary-color);
+// $primary-color: var(--nut-primary-color);
 $primary-color-end: var(--nut-primary-color-end);
 $success-color: var(--nut-success-color);
 $danger-color: var(--nut-danger-color);
 $warning-color: var(--nut-warning-color);
-$title-color: var(--nut-title-color);
+// $title-color: var(--nut-title-color);
+// $title-color: #000;
 $title-color2: var(--nut-title-color2);
-$text-color: var(--nut-text-color);
+// $text-color: var(--nut-text-color);
 $text-color-1: var(--nut-text-color-1);
 $text-color-2: var(--nut-text-color-2);
 $text-color-3: var(--nut-text-color-3);
@@ -39,3 +42,36 @@ $disabled-opacity: 0.5;
 $help-color: var(--nut-help-color);
 $disable-color: var(--nut-disable-color);
 $required-color: var(--nut-required-color);
+$uni-nav-bg-color: #a7ffa9;
+$uni-tab-select-color: #ff966a;
+$button-primary-color:#000;
+$bg-color:#edf3f6;
+$title-font-size:22px;
+$font-size-xl:20px;
+$font-size-l:18px;
+$font-size-m:16px;
+$font-size-s:14px;
+$font-size-xs:12px;
+$font-size-xxs:10px;
+
+@mixin title() {
+  font-size: $title-size;
+  color: $title-color;
+  font-weight: bold;
+}
+@mixin textsm() {
+  font-size: $font-size-s;
+  color: #808080//$text-color;
+}
+
+
+@mixin flex-center($content) {
+  display: flex;
+  align-items: center;
+  justify-content: $content;
+}
+@mixin title() {
+  font-size: $title-size;
+  color: $title-color;
+  font-weight: bold;
+}

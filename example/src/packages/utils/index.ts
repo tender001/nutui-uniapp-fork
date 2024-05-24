@@ -1,7 +1,6 @@
 export * from './array'
 export * from './is'
 export * from './patterns'
-export * from './sm3'
 export * from './assist'
 export * from './auth'
 export * from './datetime'

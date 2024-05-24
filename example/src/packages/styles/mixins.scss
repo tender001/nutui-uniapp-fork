@@ -1,0 +1,21 @@
+@mixin title() {
+    font-size: $title-size;
+    color: $title-color;
+    font-weight: bold;
+}
+@mixin textsm() {
+    font-size: $font-size-s;
+    color: #808080;
+}
+
+
+@mixin flex-center($content) {
+    display: flex;
+    align-items: center;
+    justify-content: $content;
+}
+@mixin title() {
+    font-size: $title-size;
+    color: $title-color;
+    font-weight: bold;
+}
