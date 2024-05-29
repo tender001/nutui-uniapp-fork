@@ -1,16 +1,16 @@
 <template>
     <view class="setting">
         <nut-cell-group custom-class="nav-menu">
-            <nut-cell title="个人认证" is-link desc="已认证" @click="handleWaiting">
+            <nut-cell title="实名认证" is-link desc="已认证" @click="redirectTo('/pages/user/auth/certification')">
             </nut-cell>
-            <nut-cell title="企业认证" is-link @click="handleWaiting">
+            <!-- <nut-cell title="企业认证" is-link @click="handleWaiting">
+            </nut-cell> -->
+            <nut-cell title="飞手认证" is-link @click="redirectTo('/pages/user/auth/pilot')">
             </nut-cell>
-            <nut-cell title="飞手认证" is-link @click="handleWaiting">
-            </nut-cell>
-            <nut-cell title="个人签约认证" is-link @click="handleWaiting">
+            <!-- <nut-cell title="个人签约认证" is-link @click="handleWaiting">
             </nut-cell>
             <nut-cell title="企业签约认证" is-link @click="handleWaiting">
-            </nut-cell>
+            </nut-cell> -->
         </nut-cell-group>
 
 

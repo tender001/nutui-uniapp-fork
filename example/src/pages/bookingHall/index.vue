@@ -93,6 +93,8 @@ uni.showShareMenu({withShareTicket:true})
         .nut-tab-pane {
             padding: 0;
             background: #edf3f6;
+            height: 100%;
+            overflow: auto;
 
         }
     }

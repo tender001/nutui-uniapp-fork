@@ -11,7 +11,7 @@
             </nut-cell>
             <nut-cell title="无人机管理" @click="redirectTo('/pages/user/setting/uav')" is-link desc="0">
             </nut-cell>
-            <nut-cell title="地址管理" @click="redirectTo('/pages/user/setting/adress')" is-link>
+            <nut-cell title="地址管理" @click="redirectTo('/pages/user/setting/address')" is-link>
             </nut-cell>
         </nut-cell-group>
         <nut-cell-group custom-class="nav-menu">

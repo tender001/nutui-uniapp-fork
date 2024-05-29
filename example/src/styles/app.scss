@@ -22,7 +22,36 @@ page,
   .nut-button--large{
     font-weight: bold;
   }
-
+  .footer-fixed-warp {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    width: 100%;
+    padding: 0 16px;
+    box-sizing: border-box;
+    padding-bottom: constant(safe-area-inset-bottom);
+    padding-bottom: env(safe-area-inset-bottom);
+    margin-bottom: 2px;
+    .footer-lr {
+      width: 100%;
+    }
+    .btn-list {
+      display: flex;
+      justify-content: flex-end;
+      .nut-button {
+        flex: 1;
+      }
+      .nut-button:nth-child(odd) {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+      .nut-button:nth-child(even) {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+    }
+  }
   .demo {
     height: auto;
     padding: 0 17px 17px;
