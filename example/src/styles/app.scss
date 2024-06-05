@@ -52,6 +52,12 @@ page,
       }
     }
   }
+
+  :deep(.nut-popup){
+    .nut-icon-close {
+      color:#000 !important;
+    }
+  }
   .demo {
     height: auto;
     padding: 0 17px 17px;

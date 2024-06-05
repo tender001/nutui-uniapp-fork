@@ -8,8 +8,11 @@
           <div>
             <image class="tabs-image" mode="widthFix" src="https://oss.6780.cn/pilot/feishu.png"/>
             <div class="home-content">
-              <!-- <BookingCard/> -->
-              <nut-button size="large" type="primary" @click="navigateTo('/pages/release/index')">发布飞行任务</nut-button>
+              <BookingCard/>
+              <!-- <nut-button size="large" type="primary" @click="navigateTo('/pages/release/index')">发布飞行任务</nut-button> -->
+
+              <CurOrder/>
+              <MySwiper/>
             </div>
           </div>
         </nut-tab-pane>
@@ -41,6 +44,7 @@ import { onShareAppMessage } from '@dcloudio/uni-app'
 import {redirectTo} from '@/utils/index'
 
 
+
 const userType = ref('1')
 const pilotStatus = ref(1)
 onShareAppMessage(()=>{
@@ -64,11 +68,20 @@ const navigateTo = (path:string) => {
 <style lang="scss" scoped>
 @import '@packages/styles/theme.scss';
 .home {
-  background: #edf3f6;
+  // background: #edf3f6;
+  background-image: linear-gradient(
+    180deg,
+    #a7ffa9 40%,
+
+    rgb(1 184 92 / 1%),
+    #f2f8f6);
+    min-height: 100vh;
   .user-tabs {
     // background: $uni-nav-bg-color;
     width: 100vw;
-    
+    :deep(.nut-grid-item__content){
+        background: transparent !important;
+    }
     .user-tabs-title {
       padding: 16px 0;
       background: $uni-nav-bg-color;

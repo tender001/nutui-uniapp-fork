@@ -166,7 +166,7 @@ const onSubmit = async () => {
                     width: 50%;
                     :deep(.nut-uploader__slot){
                         width: 100%;
-                        border:1rpx solid #999; //$border-color;
+                        border:1rpx solid #ddd; //$border-color;
                         border-radius: 4px;
                     }
                     .uploader-img {
