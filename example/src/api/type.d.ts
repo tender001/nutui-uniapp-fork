@@ -1,3 +1,35 @@
+/** 接口响应 */
+export interface Response<T = any> {
+  code: number;
+  data: T;
+  msg: string;
+}
+// export interface ResponsePage<T = any> export Response {
+//   code: number;
+//   data: {};
+//   msg: string;
+// }
+
+
+export interface AuthRow {
+  // 电子执照
+  electronicLicense?: string;
+  // 扩展信息
+  extData?: string;
+  // 身份证反面
+  idCardBack?: string;
+  // 身份证正面
+  idCardFront?: string;
+  // 身份证号码
+  idCardNo?: string;
+  // 真实姓名
+  realName?: string;
+  // 状态
+  state?: string;
+  // 用户ID
+  userId?: number;
+}
+
 export interface TaskItem {
   // 多少亩，可选
   acreNum?: number;

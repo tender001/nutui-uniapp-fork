@@ -1,17 +1,21 @@
 <script setup lang="ts">
-import { reactive, ref,watch } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import dayjs from 'dayjs'
+import { TaskItem } from '@/api/type.d'
+import { postCreateTask } from '@/api/uav'
+import { useUserStore } from '@/store/user'
+import { redirectTo } from '../../utils'
 
 const ruleForm = ref<any>(null)
 const formData = reactive({
-  date: '',//[date2Str(new Date())],
+  expectServiceTime: dayjs().format('YYYY-MM-DD'),//[date2Str(new Date())],
   name: '',
   orderType: '1',
-  person: 1,
-  money: '',
-  remark: '',
-  city:[1,7],
-  address:'',
+  acreNum: 100,
+  money: 1000,
+  remark: '小白菜测试',
+  city: [1, 7],
+  address: '地址',
   /** 余额抵扣 */
   deduction: false,
   /** 协议 */
@@ -28,6 +32,9 @@ const orderMaps = [{
   label: '置顶单',
   value: '3', describe: '置顶单服务费（含任务推送给100个飞手）', price: 300
 }]
+const userStore = useUserStore()
+// const userStore = {Userinfo:{name:'',phone:''}}
+const userinfo = computed(() => userStore.userinfo)
 const selectTypeData = computed(() => {
   const row = orderMaps.find(item => item.value === formData.orderType)
   return row || orderMaps[0]
@@ -37,7 +44,7 @@ const payTotal = computed(() => {
   return selectTypeData.value.price + Number(formData.money || '0')
 })
 const switchVisible = reactive<Record<string, boolean>>({
-  date: false,
+  expectServiceTime: false,
   agreement: false,
   ask: false
 })
@@ -47,55 +54,76 @@ const changeSwitch = (cellKey: string, isShow: boolean) => {
 }
 const handleChooseDate = (param: any) => {
   console.log('handleChoosedate', param)
-  formData.date = param[3]
+  formData.expectServiceTime = param[3]
 }
 const handleSelectDate = (param: any) => {
   console.log('handleSelectdate', param)
 
 }
+const submitParams = computed<TaskItem>(() => {
+  return {
+    ...formData,
+    city: formData.city.toString(),
+    expectServiceTime: dayjs(formData.expectServiceTime).format("YYYY-MM-DD HH:mm"),
+    "concatName": userinfo.value.nickName,
+    "concatPhone": userinfo.value.phone,
+    "latitude": 0,
+    "longitude": 0,
+    // "manipulatorsUserId": 0,
+    "price": 5,
+    "state": 0,
+    "taskCategory": 0,
+    "workPic": "",
+    "workRemark": ""
+  }
+})
 const handleSubmit = () => {
-  
-  ruleForm.value.validate().then(({ valid, errors }: any) => {
-    if (valid){
+
+  ruleForm.value.validate().then(async ({ valid, errors }: any) => {
+    if (valid) {
       console.log('success', formData)
-    
+
       if (!formData.agreement) {
-         return uni.showToast({ title:'请阅读并同意服务订单权益条款',icon:"none"})
+        return uni.showToast({ title: '请阅读并同意服务订单权益条款', icon: "none" })
       }
-      uni.requestPayment({
-        provider: 'alipay',
-        orderInfo: 'orderInfo', //微信、支付宝订单数据 【注意微信的订单信息，键值应该全部是小写，不能采用驼峰命名】
-        success: function (res) {
-            console.log('success:' + JSON.stringify(res));
-        },
-        fail: function (err) {
-            console.log('fail:' + JSON.stringify(err));
-        }
-    });
+      const res = await postCreateTask(submitParams.value)
+      debugger
+      if (res.code === 0) {
+        uni.showToast({ title: '发布成功', icon: "none" })
+        redirectTo('/pages/details/index?id=' + res.data)
+      }
+      // uni.requestPayment({
+      //   provider: 'alipay',
+      //   orderInfo: 'orderInfo', //微信、支付宝订单数据 【注意微信的订单信息，键值应该全部是小写，不能采用驼峰命名】
+      //   success: function (res) {
+      //     console.log('success:' + JSON.stringify(res));
+      //   },
+      //   fail: function (err) {
+      //     console.log('fail:' + JSON.stringify(err));
+      //   }
+      // });
       hasFail.value = false
-    } else{
+    } else {
       hasFail.value = true
-      uni.showToast({ title:'请先完善信息',icon:"none"})
+      uni.showToast({ title: '请先完善信息', icon: "none" })
     }
-      
+
   })
 }
 watch(() => formData, (val) => {
-  console.log('formData----',val)
-  if(hasFail.value){
+  console.log('formData----', val)
+  if (hasFail.value) {
     ruleForm.value.validate()
   }
-},{ immediate: true,deep:true})
+}, { immediate: true, deep: true })
 
 
 </script>
 
 <template>
   <div class="release-task">
-    <nut-form ref="ruleForm"
-    :model-value="formData"
-    :rules="{
-      date: [
+    <nut-form ref="ruleForm" :model-value="formData" :rules="{
+      expectServiceTime: [
         { required: true, message: '请选择日期' },
       ],
       city: [
@@ -107,37 +135,37 @@ watch(() => formData, (val) => {
       remark: [
         { required: true, message: '请填写备注' },
       ],
-      person: [
-        { required: true, message: '请填写人数' },
+      acreNum: [
+        { required: true, message: '请填写面积' },
       ],
     }">
       <Pilot />
-      <nut-form-item label="日期" prop="date" :show-error-message="false">
-        <nut-cell  :desc="formData.date ? formData.date : '请选择'"
-          @click="changeSwitch('date', true)" is-link />
-        <nut-calendar v-model:visible="switchVisible.date" :default-value="formData.date"
-          :start-date="dayjs().format('YYYY-MM-DD')" safe-area-inset-bottom @close="changeSwitch('date', false)"
-          @choose="handleChooseDate" @select="handleSelectDate" />
+      <nut-form-item label="日期" prop="expectServiceTime" :show-error-message="false">
+        <nut-cell :desc="formData.expectServiceTime ? formData.expectServiceTime : '请选择'"
+          @click="changeSwitch('expectServiceTime', true)" is-link />
+        <nut-calendar v-model:visible="switchVisible.expectServiceTime" :default-value="formData.expectServiceTime"
+          :start-date="dayjs().format('YYYY-MM-DD')" safe-area-inset-bottom
+          @close="changeSwitch('expectServiceTime', false)" @choose="handleChooseDate" @select="handleSelectDate" />
       </nut-form-item>
       <!-- <nut-cell-group> -->
-        <!-- <pre>2222{{ formData.city }}{{ formData.date }}</pre> -->
-        <nut-form-item label="地区" prop="city" :show-error-message="false">
-          <Address v-model="formData.city" ></Address>
-        </nut-form-item>
-        
-        <nut-cell is-link>
-          <template #title>
-            <div>详细地址
-              <nut-tag color="#E9E9E9" text-color="#999999"> 非必选 </nut-tag>
-            </div>
-          </template>
-        </nut-cell>
+      <!-- <pre>2222{{ formData.city }}{{ formData.date }}</pre> -->
+      <nut-form-item label="地区" prop="city" :show-error-message="false">
+        <Address v-model="formData.city"></Address>
+      </nut-form-item>
+
+      <nut-cell is-link>
+        <template #title>
+          <div>详细地址
+            <nut-tag color="#E9E9E9" text-color="#999999"> 非必选 </nut-tag>
+          </div>
+        </template>
+      </nut-cell>
       <!-- </nut-cell-group> -->
 
-      <nut-form-item label="人数" prop="person">
-        <nut-input v-model="formData.person" class="nut-input-text" placeholder="请输入人数" type="number"
+      <nut-form-item label="面积" prop="acreNum">
+        <nut-input v-model="formData.acreNum" class="nut-input-text" placeholder="请输入面积" type="number"
           input-align="right"><template #right>
-            <div>人</div>
+            <div>亩</div>
           </template></nut-input>
       </nut-form-item>
       <nut-form-item label="佣金" prop="money" :show-error-message="false">
@@ -146,14 +174,14 @@ watch(() => formData, (val) => {
             <div>元</div>
           </template></nut-input>
       </nut-form-item>
-      <nut-form-item  prop="remark" :show-error-message="false">
+      <nut-form-item prop="remark" :show-error-message="false">
         <nut-textarea :rows="3" placeholder="详细的任务描述，更容易让飞手接单哦~（如金额是否包含差旅费、成果交付的要求等）" v-model="formData.remark"
-        limit-show :max-length="300" />
+          limit-show :max-length="300" />
       </nut-form-item>
 
       <!-- <nut-cell  > -->
-        <nut-form-item prop="orderType" :show-error-message="false">
-          <div class="radio-group-type">
+      <nut-form-item prop="orderType" :show-error-message="false">
+        <div class="radio-group-type">
           <nut-radio-group v-model="formData.orderType" direction="horizontal">
 
             <nut-radio :label="item.value" shape="button" v-for="(item, index) in orderMaps" :key="index">
@@ -163,7 +191,7 @@ watch(() => formData, (val) => {
 
           </nut-radio-group>
         </div>
-        </nut-form-item>
+      </nut-form-item>
       <!-- </nut-cell> -->
       <!-- <nut-cell>
         <div class="radio-group-type">
@@ -216,8 +244,7 @@ watch(() => formData, (val) => {
           <div class="cell-footer">
             <nut-cell>
               <template #title>
-                <div class="pay-title"><nut-icon @click="switchVisible.ask = true" name="ask2"
-                    size="14"></nut-icon>费用说明
+                <div class="pay-title"><nut-icon @click="switchVisible.ask = true" name="ask2" size="14"></nut-icon>费用说明
                 </div>
               </template>
               <template #desc>
@@ -285,17 +312,19 @@ watch(() => formData, (val) => {
 <style lang="scss" scoped>
 .release-task {
   padding: 16px;
-  background-image: linear-gradient(
-    45deg,
-    rgb(1 184 92 / 5%) 40%,
+  background-image: linear-gradient(45deg,
+      rgb(1 184 92 / 5%) 40%,
 
-    rgb(1 184 92 / 1%),
-  );;
-  :deep(.nut-form){
+      rgb(1 184 92 / 1%),
+    );
+  ;
+
+  :deep(.nut-form) {
     .nut-cell-group__wrap {
       background: transparent;
       box-shadow: none;
       margin: 0;
+
       .nut-cell-group__wrap {
         background: transparent;
         box-shadow: $cell-box-shadow;
@@ -303,6 +332,7 @@ watch(() => formData, (val) => {
       }
     }
   }
+
   :deep(.nut-textarea) {
     // border-radius: $cell-border-radius;
     // box-shadow: $cell-box-shadow;
@@ -315,6 +345,7 @@ watch(() => formData, (val) => {
     // font-weight: bold;
     color: $title-color;
     font-size: $cell-title-font;
+
     .nut-tag {
       font-size: 10px;
       height: 14px !important;
@@ -325,6 +356,7 @@ watch(() => formData, (val) => {
     // font-weight: bold;
     color: $title-color;
     font-size: $cell-title-font;
+
     .nut-form-item__body__slots {
       .nut-cell {
         padding: 0;
@@ -366,9 +398,10 @@ watch(() => formData, (val) => {
   }
 
   .pay-card {
-    :deep(.nut-cell-group__wrap){
-      box-shadow:none;
+    :deep(.nut-cell-group__wrap) {
+      box-shadow: none;
     }
+
     .cell-title {
       :deep(.nut-cell) {
         font-weight: bold;

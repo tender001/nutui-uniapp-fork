@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { useAppStore } from './store'
 
-const { darkMode, statusBarHeight, menuButtonBounding } = storeToRefs(useAppStore())
+const { darkMode, statusBarHeight, menuButtonBounding, } = storeToRefs(useAppStore())
 onLaunch(() => {
+  const appStore = useAppStore()
+  appStore.setEnums()
   // #ifdef MP-WEIXIN || MP-QQ
   const systemInfo = uni.getSystemInfoSync()
   // the systemInfo.theme is only support dark mode in WeChat and QQ

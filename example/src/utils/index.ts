@@ -24,8 +24,8 @@ export const redirectTo = (
       ...params,
     })
   // 导航页
-  const tabBarUrl = pages.tabBar?.list.map(item=>`/${item.pagePath}`)
-  
+  const tabBarUrl = pages.tabBar?.list.map(item => `/${item.pagePath}`)
+
   if (tabBarUrl.includes(path)) {
     mode = 'tabbar'
   }
@@ -78,7 +78,7 @@ export const redirectBack = () => {
  * 联系客服
  */
 export const openCustomerServiceChat = async () => {
-  
+
   const path = `${process.env.CHAT}/#?role=1688899480538`
   uni.navigateTo({ url: `/pages/minor/web-view/index?path=${encodeURIComponent(path)}` })
 }
@@ -145,4 +145,21 @@ export const uploadFile = (props: {
       return false
     },
   })
+}
+
+/**
+ * 关键信息隐藏
+ * @param str 字符串
+ * @param frontLen 字符串前面保留位数
+ * @param endLen 字符串后面保留位数
+ * @returns {string}
+ */
+export const hideCode = (str: string, frontLen: number, endLen: number) => {
+  str = str || ''
+  const len = str.length - frontLen - endLen
+  let xing = ''
+  for (let i = 0; i < len; i++) {
+    xing += '*'
+  }
+  return str.substring(0, frontLen) + xing + str.substring(str.length - endLen)
 }

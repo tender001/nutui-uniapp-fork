@@ -1,15 +1,16 @@
 {
   "extends": "@vue/tsconfig/tsconfig.json",
   "compilerOptions": {
+    "moduleResolution": "node",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@packages/*": ["./src/packages/*"]
+    },
     "types": [
       "node",
       "vite/client",
       "@dcloudio/types",
       "@uni-helper/uni-app-types"
-    ],
-    "paths": {
-      "@/*": ["./src/*"],
-      "@packages/*": ["./src/packages/*"]
-    }
+    ]
   }
 }

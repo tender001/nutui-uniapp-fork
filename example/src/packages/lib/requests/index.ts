@@ -19,7 +19,7 @@ function endLoading(showLoading = false) {
 // const createRequests = (requestsConfig: RequestsConfig = {}) => {
 export function useRequests(requestsConfig: RequestsConfig = {}) {
   const baseURL = requestsConfig.baseURL || import.meta.env.VITE_API_URL
-  const AuthorizationKey = requestsConfig.AuthorizationKey || 'Access-Token'
+  const AuthorizationKey = requestsConfig.AuthorizationKey || 'Authorization'
   const errorCodes = requestsConfig.errorCodes || [500, 400]
   const codeKey = requestsConfig.codeKey || 'code'
   const messageKey = requestsConfig.messageKey || 'message'
@@ -50,7 +50,8 @@ export function useRequests(requestsConfig: RequestsConfig = {}) {
       config.headers = config.headers || {}
       const token = getToken()
       if (token)
-        config.headers[AuthorizationKey] = token
+        // config.headers[AuthorizationKey] = token
+        config.headers[AuthorizationKey] = token // `Bearer ${token}`
 
       startLoading(config?.requestOptions?.showLoading)
       return config

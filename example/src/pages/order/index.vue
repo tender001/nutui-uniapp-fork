@@ -3,15 +3,13 @@
     <nut-searchbar v-model="search.keyword" custom-class="search" shape="round"
       placeholder="请输入订单名称/编号"></nut-searchbar>
     <nut-tabs v-model="userType" type="smile" size="large">
-      <nut-tab-pane title="我的发单" pane-key="1">
-        <List :data="data" />
+      <nut-tab-pane title="我的发单" pane-key="0">
+        <List :data="myCreateOrders" v-if="myCreateOrders.length" />
+        <nut-empty v-else image="https://oss.6780.cn/pilot/empty.png" description="暂无订单"></nut-empty>
       </nut-tab-pane>
-      <nut-tab-pane title="我的接单" pane-key="2">
-        <!-- <List :data="data" /> -->
-        <nut-empty
-          image="https://oss.6780.cn/pilot/empty.png"
-          description="暂无订单"
-        ></nut-empty>
+      <nut-tab-pane title="我的接单" pane-key="1">
+        <List :data="myOfferOrders" v-if="myOfferOrders.length" />
+        <nut-empty v-else image="https://oss.6780.cn/pilot/empty.png" description="暂无订单"></nut-empty>
       </nut-tab-pane>
     </nut-tabs>
   </view>
@@ -20,9 +18,12 @@
 
 <script setup lang="ts">
 import { reactive } from 'vue'
+import { getMyTask } from '../../api/uav'
 import List from './List.vue'
 
-const userType = ref('1')
+const userType = ref('0')
+const myCreateOrders = ref([] as any)
+const myOfferOrders = ref([] as any)
 
 const data = Array.from({ length: 20 })
 const search = reactive<Record<string, any>>({
@@ -30,7 +31,25 @@ const search = reactive<Record<string, any>>({
 })
 onMounted(() => {
   uni.showShareMenu({ withShareTicket: true })
+  fetchOrders()
 })
+const fetchOrders = () => {
+  getMyTask({
+    pageNum: 1,
+    pageSize: 10,
+    type: userType.value
+  }).then(res => {
+    if (res.code === 0) {
+      if (userType.value === '0') {
+        myCreateOrders.value = res.data.list
+      } else {
+        myOfferOrders.value = res.data.list
+      }
+    }
+
+
+  })
+}
 
 </script>
 <route lang="json">{
@@ -43,21 +62,24 @@ onMounted(() => {
 @import '@packages/styles/theme.scss';
 
 .order-page {
-  :deep(.nut-tabs__titles){
+  :deep(.nut-tabs__titles) {
     background-color: $bg-color;
-    
+
   }
+
   :deep(.nut-tab-pane) {
     padding: 0;
     background-color: transparent;
   }
+
   :deep(.nut-tabs__titles-item) {
     flex: unset !important;
     width: 100px !important;
+
     .nut-icon-joy-smile {
       font-size: 18px !important;
     }
   }
-   
+
 }
 </style>

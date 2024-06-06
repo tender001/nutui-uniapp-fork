@@ -1,72 +1,67 @@
 {
-  "typescript.tsdk": "node_modules/typescript/lib",
-  // Disable the default formatter, use eslint instead
-  "prettier.enable": true,
-  "editor.formatOnSave": true,
-    // Enable the ESlint flat config support
-  "eslint.experimental.useFlatConfig": true,
-  "stylelint.validate": [
-    "css",
-    "less",
-    "postcss",
-    "scss",
-    "vue",
-    "sass"
-  ],
-  "unocss.root": [
-    "example"
-  ],
-  "references.preferredLocation": "peek",
-  "cSpell.words": [
-    "Cascader",
-    "nutui"
-  ],
-  // Auto fix
-  "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit",
-    "source.organizeImports": "never"
+  "search.exclude": {
+    "**/node_modules": true,
+    "dist": true,
+    "yarn.lock": true
   },
-  // Silent the stylistic rules in you IDE, but still auto fix them
-  "eslint.rules.customizations": [
-    {
-      "rule": "style/*",
-      "severity": "off"
-    },
-    {
-      "rule": "*-indent",
-      "severity": "off"
-    },
-    {
-      "rule": "*-spacing",
-      "severity": "off"
-    },
-    {
-      "rule": "*-spaces",
-      "severity": "off"
-    },
-    {
-      "rule": "*-order",
-      "severity": "off"
-    },
-    {
-      "rule": "*-dangle",
-      "severity": "off"
-    },
-    {
-      "rule": "*-newline",
-      "severity": "off"
-    },
-    {
-      "rule": "*quotes",
-      "severity": "off"
-    },
-    {
-      "rule": "*semi",
-      "severity": "off"
-    }
+  "stylelint.validate": ["css", "less", "postcss", "scss", "vue", "sass"],
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "vue"
   ],
-  "vue.server.maxOldSpaceSize": 4096,
-  "vue.server.hybridMode": true,
-  "typescript.tsserver.maxTsServerMemory": 4096,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.stylelint": "explicit"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "Vue.volar"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "kite.showWelcomeNotificationOnStartup": false,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "security.workspace.trust.untrustedFiles": "open",
+  "files.associations": {
+    "*.cjson": "jsonc",
+    "*.wxss": "css",
+    "*.wxs": "javascript"
+  },
+  "emmet.includeLanguages": {
+    "wxml": "html"
+  },
+  "minapp-vscode.disableAutoConfig": true,
+  "git.openRepositoryInParentFolders": "never",
+  "[python]": {
+    "editor.formatOnType": true
+  },
+  "fileheader.Author": "小白菜",
+  "fileheader.LastModifiedBy": "小白菜",
+  "fileheader.tpl": "/* *  @Descripttion:   * @Author: {author}  * @Date: {createTime}  * @Last Modified by:   {lastModifiedBy}  * @Last Modified time: {updateTime}  */",
+  "prettier.trailingComma": "none",
+  "[css]": {
+    "editor.defaultFormatter": "stylelint.vscode-stylelint"
+  },
+  "editor.formatOnSave": true,
+  "extensions.ignoreRecommendations": true,
+  "workbench.colorCustomizations": {},
+  "git.autofetch": true,
 }
-

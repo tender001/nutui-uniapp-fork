@@ -13,5 +13,5 @@ const errorHandler = (msg: string) => {
   }, 50)
 }
 
-const baseURL = import.meta.env.VITE_API_URL
+const baseURL = 'https://qt.59pa.com/prod-api'//import.meta.env.VITE_API_URL
 export const requests = useRequests({ baseURL, errorHandler })
