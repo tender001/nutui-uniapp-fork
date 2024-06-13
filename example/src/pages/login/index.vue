@@ -49,7 +49,7 @@ import { reactive, ref } from 'vue'
 import { login } from '@/api'
 import { setToken } from '@packages/utils'
 import { useUserStore } from '@/store/user'
-import { hideCode, showToast } from '../../utils'
+import { hideCode, redirectTo, showToast } from '../../utils'
 
 // ====================== Hooks ======================
 
@@ -84,11 +84,8 @@ const handleWxLogin = async (e: any) => {
   }
   const res = await userStore.login(userinfo.value)
   if (res) {
-    // if (!auth.userInfo.nickName || auth.userInfo.nickName === '微信用户') {
-    //   visibleAvatar.value = true
-    // } else {
-    //   finishLogin()
-    // }
+
+    redirectTo('/pages/my/index')
   }
 }
 onMounted(() => {

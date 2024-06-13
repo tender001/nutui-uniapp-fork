@@ -65,13 +65,13 @@ export const redirectTo = (
   }
 }
 export const redirectBack = () => {
-  const length = uni.getCurrentPages().length
+  const length = getCurrentPages().length
   if (length > 1) {
     uni.navigateBack({
       delta: 1,
     })
   } else {
-    redirectTo('/pages/index/index')
+    redirectTo('/pages/home/index')
   }
 }
 /**

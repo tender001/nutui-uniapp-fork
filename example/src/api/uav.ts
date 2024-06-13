@@ -1,5 +1,5 @@
 import { requests } from './base'
-import type { AuthRow, TaskItem, Response } from './type'
+import type { AuthRow, TaskItem, Response, Page } from './type'
 
 // 飞手认证
 export const postAuth = (data: AuthRow): Promise<any> => {
@@ -39,7 +39,7 @@ export const postLogin = (data: any): Promise<any> => {
     // return requests.post('/uav/testlogin', data)
 }
 // 我的任务列表 type 0-我的发单 1-我的接单
-export const getMyTask = (params: { pageNum: number, pageSize: number, type: number | string }): Promise<Response<{ list: TaskItem }>> => {
+export const getMyTask = (params: { pageNum: number, pageSize: number, type: number | string }): Promise<Response<{ list: TaskItem[], page: Page }>> => {
     return requests.get('/uav/myTask', params)
 }
 // 支付回调
@@ -51,7 +51,7 @@ export const getReceivingTask = (params: { taskId: string }): Promise<any> => {
     return requests.get('/uav/receivingTask', params)
 }
 // 任务大厅 type 排序类型 0-附近 1-最新 2.高佣
-export const getTaskList = (params: { pageNum: number, pageSize: number, type: number }): Promise<any> => {
+export const getTaskList = (params: { pageNum: number, pageSize: number, orderType: number }): Promise<Response<{ list: TaskItem[], page: Page }>> => {
     return requests.get('/uav/taskList', params)
 }
 // 更新用户基本信息

@@ -2,6 +2,7 @@
 
     <view class="booking-hall">
         <nut-sticky top="57">
+
             <nut-tabs v-model="active" type="smile" size="large" custom-class="tabs">
                 <nut-tab-pane custom-class="tab-pane" title="附近">
                     <List tab="附近" :data="list" />
@@ -17,24 +18,25 @@
         </nut-sticky>
     </view>
 </template>
-<route lang="json">
-{
+<route lang="json">{
     "style": {
-    "navigationBarTitleText": "需求大厅"
+        "navigationBarTitleText": "需求大厅"
     }
-}
-</route>
+}</route>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import List from './List.vue'
 import dataJson from './data.json'
 import { onShareAppMessage } from '@dcloudio/uni-app'
+import { getTaskList } from '../../api/uav'
+// import { type TaskItem } from '@/api/type.d'
 
 const active = ref(0)
-const list = ref(dataJson.result)
+// dataJson.result
+const list = ref<any[]>([])
 
-onShareAppMessage(()=>{
+onShareAppMessage(() => {
     return {
         title: '分享的标题',
         desc: 'unibest 演示示例',
@@ -43,7 +45,26 @@ onShareAppMessage(()=>{
     }
 })
 onMounted(() => {
-uni.showShareMenu({withShareTicket:true})
+    uni.showShareMenu({ withShareTicket: true })
+
+})
+
+
+const getList = async () => {
+    // 排序类型 0-附近 1-最新 2.高佣
+    const res = await getTaskList({ pageNum: 1, pageSize: 10, orderType: active.value })
+    if (res?.code === 0) {
+        list.value = res.data?.list.map(item => {
+            return {
+                ...item,
+                state: item.state === 0 ? '待接单' : item.state === 1 ? '待取货' : item.state === 2 ? '待交付' : '已完成',
+                money: item.price! * item.acreNum!,
+            }
+        })
+    }
+}
+onShow(() => {
+    getList()
 })
 
 
@@ -98,11 +119,12 @@ uni.showShareMenu({withShareTicket:true})
 
         }
     }
-    :deep(.booking-list){
-        .nut-cell__title{
+
+    :deep(.booking-list) {
+        .nut-cell__title {
             flex: unset;
         }
     }
-    
+
 }
 </style>

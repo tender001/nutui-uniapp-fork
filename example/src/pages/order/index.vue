@@ -40,10 +40,17 @@ const fetchOrders = () => {
     type: userType.value
   }).then(res => {
     if (res.code === 0) {
+      const list = res.data.list.map((item: any) => {
+        return {
+          ...item,
+          state: item.state === 0 ? '待接单' : item.state === 1 ? '待取货' : item.state === 2 ? '待交付' : '已完成',
+          money: item.price * item.acreNum,
+        }
+      })
       if (userType.value === '0') {
-        myCreateOrders.value = res.data.list
+        myCreateOrders.value = list
       } else {
-        myOfferOrders.value = res.data.list
+        myOfferOrders.value = list
       }
     }
 

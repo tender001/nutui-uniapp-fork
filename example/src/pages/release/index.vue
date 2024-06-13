@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { reactive, ref, watch } from 'vue'
 import dayjs from 'dayjs'
-import { TaskItem } from '@/api/type.d'
+// import { type TaskItem } from '@/api/type.d'
 import { postCreateTask } from '@/api/uav'
 import { useUserStore } from '@/store/user'
-import { redirectTo } from '../../utils'
+import { redirectTo, showToast } from '../../utils'
 
 const ruleForm = ref<any>(null)
 const formData = reactive({
@@ -13,9 +13,9 @@ const formData = reactive({
   orderType: '1',
   acreNum: 100,
   money: 1000,
-  remark: '小白菜测试',
+  remark: '高空化肥喷洒',
   city: [1, 7],
-  address: '地址',
+  address: '白菜村菊花小园',
   /** 余额抵扣 */
   deduction: false,
   /** 协议 */
@@ -60,7 +60,7 @@ const handleSelectDate = (param: any) => {
   console.log('handleSelectdate', param)
 
 }
-const submitParams = computed<TaskItem>(() => {
+const submitParams = computed<any>(() => {
   return {
     ...formData,
     city: formData.city.toString(),
@@ -72,9 +72,10 @@ const submitParams = computed<TaskItem>(() => {
     // "manipulatorsUserId": 0,
     "price": 5,
     "state": 0,
-    "taskCategory": 0,
+    "taskCategory": 1,
     "workPic": "",
-    "workRemark": ""
+    "workRemark": "",
+    nickName: formData.remark
   }
 })
 const handleSubmit = () => {
@@ -84,12 +85,11 @@ const handleSubmit = () => {
       console.log('success', formData)
 
       if (!formData.agreement) {
-        return uni.showToast({ title: '请阅读并同意服务订单权益条款', icon: "none" })
+        return showToast('请阅读并同意服务订单权益条款')
       }
       const res = await postCreateTask(submitParams.value)
-      debugger
       if (res.code === 0) {
-        uni.showToast({ title: '发布成功', icon: "none" })
+        showToast('发布成功')
         redirectTo('/pages/details/index?id=' + res.data)
       }
       // uni.requestPayment({
@@ -126,8 +126,8 @@ watch(() => formData, (val) => {
       expectServiceTime: [
         { required: true, message: '请选择日期' },
       ],
-      city: [
-        { required: true, message: '请选择地区' },
+      address: [
+        { required: true, message: '请填写地址' },
       ],
       money: [
         { required: true, message: '请填写佣金' },
@@ -149,27 +149,31 @@ watch(() => formData, (val) => {
       </nut-form-item>
       <!-- <nut-cell-group> -->
       <!-- <pre>2222{{ formData.city }}{{ formData.date }}</pre> -->
-      <nut-form-item label="地区" prop="city" :show-error-message="false">
-        <Address v-model="formData.city"></Address>
-      </nut-form-item>
+      <!-- <nut-form-item label="地区" prop="city" :show-error-message="false">
+        <Address v-model="formData.city"></Address> -->
+      <!-- </nut-form-item> -->
 
-      <nut-cell is-link>
+      <!-- <nut-cell is-link>
         <template #title>
           <div>详细地址
             <nut-tag color="#E9E9E9" text-color="#999999"> 非必选 </nut-tag>
           </div>
         </template>
-      </nut-cell>
+</nut-cell> -->
+      <nut-form-item label="详细地址" prop="address">
+        <nut-input v-model="formData.address" class="nut-input-text" placeholder="请填写详细地址"
+          input-align="right"></nut-input>
+      </nut-form-item>
       <!-- </nut-cell-group> -->
 
       <nut-form-item label="面积" prop="acreNum">
-        <nut-input v-model="formData.acreNum" class="nut-input-text" placeholder="请输入面积" type="number"
+        <nut-input v-model="formData.acreNum" class="nut-input-text" placeholder="请填写面积" type="number"
           input-align="right"><template #right>
             <div>亩</div>
           </template></nut-input>
       </nut-form-item>
       <nut-form-item label="佣金" prop="money" :show-error-message="false">
-        <nut-input v-model="formData.money" class="nut-input-text" placeholder="请输入金额" type="number"
+        <nut-input v-model="formData.money" class="nut-input-text" placeholder="请填写金额" type="number"
           input-align="right"><template #right>
             <div>元</div>
           </template></nut-input>

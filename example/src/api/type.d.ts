@@ -4,6 +4,13 @@ export interface Response<T = any> {
   data: T;
   msg: string;
 }
+export interface Page<T = any> {
+  pageNum: number
+  pageSize: number
+  pages: number
+  total: number
+}
+page.total
 // export interface ResponsePage<T = any> export Response {
 //   code: number;
 //   data: {};
@@ -25,7 +32,7 @@ export interface AuthRow {
   // 真实姓名
   realName?: string;
   // 状态
-  state?: string;
+  state?: number;
   // 用户ID
   userId?: number;
 }

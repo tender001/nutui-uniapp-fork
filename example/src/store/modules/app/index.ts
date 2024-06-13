@@ -14,11 +14,14 @@ interface CateItem {
   id: number,
   name: string,
   icon: string,
-  categoryList: Array<{ id: number, name: string, price: number, icon: string, }>
+  categoryList?: Array<{ id: number, name: string, price: number, icon: string, }>
 }
-interface EnumsState {
-  cate: CateItem | any[]
-}
+// interface EnumsState {
+//   cate: CateItem[] | any[]
+// }
+
+export type EnumName = 'cate';
+export type EnumsState = Record<EnumName, CateItem[]>;
 
 export const useAppStore = defineStore(
   'app',
@@ -33,6 +36,28 @@ export const useAppStore = defineStore(
           cate: [res.data]
         }
       })
+    }
+    const getEnumsValueName = (enumKey: EnumName, value: string | number) => {
+      const list = enums.value[enumKey]
+      if (list?.length) {
+        let arr: CateItem[] = []
+        list.map(item => {
+          arr.push({
+            ...item,
+            categoryList: undefined
+          })
+          item.categoryList?.map(item => {
+            arr.push({
+              ...item,
+            })
+          })
+        })
+        const row = arr.find(item => {
+          return item.id === value
+        })
+        return row?.name || '-'
+      }
+      return '-'
     }
     // #ifdef H5
     const themeStorage = localStorage.getItem('vitepress-theme-appearance')
@@ -64,7 +89,8 @@ export const useAppStore = defineStore(
       customBarHeight,
       menuButtonBounding,
       enums,
-      setEnums
+      setEnums,
+      getEnumsValueName
     }
   },
 )

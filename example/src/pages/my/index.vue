@@ -15,19 +15,19 @@
     </view>
     <view class="my-content">
       <view class="my-content-order">
-        <view class="my-content-order-num">1</view>
-        <view class="my-content-order-type" @click="onClickMenu('/pages/order/index')">飞行订单<nut-icon
+        <view class="my-content-order-num">{{ orderNums }}</view>
+        <view class="my-content-order-type" @click="onClickMenu('/pages/order/index')">任务订单<nut-icon
             name="arrow-right"></nut-icon></view>
       </view>
       <nut-cell-group custom-class="nav-menu">
-        <nut-cell is-link title="联系客服" @click="onClickMenu('/pages/components/router/index')">
+        <nut-cell is-link title="联系客服" @click="handleWaiting">
 
         </nut-cell>
         <nut-cell is-link title="设置" @click="onClickMenu('/pages/user/setting/index')">
         </nut-cell>
-        <nut-cell is-link title="意见反馈" @click="onClickMenu('/pages/components/store/index')">
+        <nut-cell is-link title="意见反馈" @click="handleWaiting">
         </nut-cell>
-        <nut-cell is-link title="微信消息提醒" @click="onClickMenu('/pages/components/store/index')">
+        <nut-cell is-link title="微信消息提醒" @click="handleWaiting">
         </nut-cell>
 
 
@@ -35,7 +35,7 @@
       </nut-cell-group>
     </view>
 
-
+    <UserPopup :visible="userPopup" @close="userPopup = false" />
   </view>
 </template>
 
@@ -45,27 +45,46 @@ import { computed } from 'vue'
 import { useUserStore } from '@/store/user'
 import { removeToken, hiddenPhone, getToken } from '@/packages/utils'
 import { logout } from '@/api'
-import { redirectTo } from '@/utils/index'
+import { redirectTo, showToast } from '@/utils/index'
+import { getMyTask } from '../../api/uav'
 
 const userStore = useUserStore()
+const userPopup = ref(false)
+const handleWaiting = () => {
+  showToast('功能开发中...')
+}
 onShow(() => {
   console.log('My Show')
   if (!getToken()) {
     redirectTo('/pages/login/index') // 跳转到登录页
     return false
-  } else {
-    userStore.setUserinfo()
   }
 })
+const orderNums = ref(0)
 
 
-// const userStore = {Userinfo:{name:'',phone:''}}
 const userinfo = computed(() => userStore.userinfo)
 
 const onClickMenu = (path: string) => {
   redirectTo(path)
 
 }
+const getOrderNums = () => {
+  getMyTask({
+    pageNum: 1,
+    pageSize: 10,
+    type: '0'
+  }).then(res => {
+    orderNums.value = res.data.page.total
+  })
+}
+onMounted(async () => {
+  await userStore.setUserinfo()
+  if (!userinfo.value.phone) {
+    userPopup.value = true
+  }
+  getOrderNums()
+})
 
 const onLogout = async () => {
   const res = await logout()
