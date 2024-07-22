@@ -38,7 +38,7 @@
           </view>
         </template>
         <template #desc>
-          <nut-button plain size="small" type="primary" @click="handleTakeOrder">确认接单</nut-button>
+          <nut-button plain size="small" type="primary" @click="() => handleTakeOrder(item)">确认接单</nut-button>
         </template>
 
       </nut-cell>
@@ -53,16 +53,42 @@
 import dayjs from 'dayjs'
 import { useAppStore } from '@/store'
 import { showDay } from '@/utils/date'
+import { useUserStore } from '@/store/user'
+import { getReceivingTask } from '../../api/uav'
+import { redirectTo, showToast } from '../../utils'
 
 const appStore = useAppStore()
+const userStore = useUserStore()
+
+const userinfo = computed(() => userStore.userinfo)
 // getEnumsValueName
 const props = defineProps({
   data: { type: Array, default: () => [] },
   tab: { type: String, default: '' }
 })
+onShow(async () => {
 
-const handleTakeOrder = () => {
-  console.log('handleTakeOrder')
+
+})
+
+const handleTakeOrder = async (row: any) => {
+  // getReceivingTask
+  console.log('userinfo', userinfo)
+  const res = await getReceivingTask({ taskId: row.taskId || 26 })
+  const { code } = res
+  if (code === 0) {
+    showToast('接单成功')
+    redirectTo(`/pages/details/index?taskId=${row.taskId}`)
+
+  }
+  if (code === 100) {
+    redirectTo('/pages/user/auth/pilot')
+    return
+    return
+  }
+
+  debugger
+  console.log('handleTakeOrder', res)
 }
 </script>
 

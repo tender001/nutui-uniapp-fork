@@ -53,12 +53,17 @@ const userPopup = ref(false)
 const handleWaiting = () => {
   showToast('功能开发中...')
 }
-onShow(() => {
+onShow(async () => {
   console.log('My Show')
   if (!getToken()) {
     redirectTo('/pages/login/index') // 跳转到登录页
     return false
   }
+  await userStore.setUserinfo()
+  if (!userinfo.value.phone) {
+    userPopup.value = true
+  }
+  getOrderNums()
 })
 const orderNums = ref(0)
 
@@ -79,11 +84,7 @@ const getOrderNums = () => {
   })
 }
 onMounted(async () => {
-  await userStore.setUserinfo()
-  if (!userinfo.value.phone) {
-    userPopup.value = true
-  }
-  getOrderNums()
+
 })
 
 const onLogout = async () => {

@@ -20,9 +20,9 @@ function endLoading(showLoading = false) {
 export function useRequests(requestsConfig: RequestsConfig = {}) {
   const baseURL = requestsConfig.baseURL || import.meta.env.VITE_API_URL
   const AuthorizationKey = requestsConfig.AuthorizationKey || 'Authorization'
-  const errorCodes = requestsConfig.errorCodes || [500, 400]
+  const errorCodes = requestsConfig.errorCodes || [401, 402]
   const codeKey = requestsConfig.codeKey || 'code'
-  const messageKey = requestsConfig.messageKey || 'message'
+  const messageKey = requestsConfig.messageKey || 'msg'
   const successCode = requestsConfig.successCode || 0
   const errorHandler = requestsConfig.errorHandler
 
@@ -72,21 +72,19 @@ export function useRequests(requestsConfig: RequestsConfig = {}) {
         return response.data
       const { [codeKey]: code, [messageKey]: msg } = response?.data || {}
       if (code && errorCodes.includes(code)) {
-        // uni.showToast({ title: msg })
-        // uni.navigateTo({ url: '/pages/login/index' })
+        uni.navigateTo({ url: '/pages/login/index' })
         errorHandler?.(msg)
         return response.data
       }
       if (code && code !== successCode) {
         uni.hideToast()
-        uni.showToast({ title: msg })
+        uni.showToast({ title: msg, icon: 'none' })
       }
       return response?.data
     },
     (error) => {
       if (error && error.response)
         error.message = httpMsg[error.response.status] || httpMsg.errorMsg
-
       if (error.message) {
         uni.hideToast()
         uni.showToast({ title: error.message })

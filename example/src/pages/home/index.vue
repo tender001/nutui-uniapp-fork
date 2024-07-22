@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div class="user-tabs">
-      <div class="user-tabs-title">小白菜</div>
+      <div class="user-tabs-title">小白菜飞手</div>
       <nut-avatar class="user-tabs-avatar"> <img @click="navigateTo('/pages/my/index')"
           src="https://oss.6780.cn/pilot/avatar.png" /> </nut-avatar>
       <nut-tabs v-model="userType" size="large" type="smile">

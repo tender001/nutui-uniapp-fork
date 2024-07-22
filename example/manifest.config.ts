@@ -1,14 +1,14 @@
 import { defineManifestConfig } from '@uni-helper/vite-plugin-uni-manifest'
 
 export default defineManifestConfig({
-  'name': '植保防护',
+  'name': '青创农服',
   'appid': '__UNI__D989E4B',
   'description': '',
   'versionName': '1.0.0',
   'versionCode': '100',
   'transformPx': false,
   'mp-weixin': {
-    appid: 'wx1b28de72b7e61f96',
+    appid: 'wx1db789abdecc9a60',
     setting: {
       urlCheck: false,
       es6: true,
@@ -24,7 +24,7 @@ export default defineManifestConfig({
     // mergeVirtualHostAttributes: true,
   },
   'mp-alipay': {
-    appid: 'wxd4e6c25454525507',
+    appid: 'wx1db789abdecc9a60',
     setting: {
       urlCheck: false,
       es6: true,

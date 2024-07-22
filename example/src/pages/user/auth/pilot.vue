@@ -119,6 +119,7 @@ const onSubmit = async () => {
         postAuth({ state: 1 }).then((res: any) => {
             if (res.code === 0) {
                 showToast('认证成功')
+                redirectBack()
             }
         })
     } else {
@@ -137,7 +138,7 @@ const updateAuth = (params: any) => {
 onShow(async () => {
     await userStore.setUserinfo()
     if (userStore.userinfo.state === 2) {
-        redirectBack()
+        // redirectBack()
     }
 })
 

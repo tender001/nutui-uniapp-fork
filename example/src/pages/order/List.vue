@@ -1,6 +1,6 @@
 <template>
   <view class="order-list flex flex-col">
-    <view v-for="(item, index) in  data " :key="index" class="order-list-item">
+    <view v-for="(item, index) in   data as any  " :key="index" class="order-list-item">
 
       <view class="list-item-row list-item-top flex justify-between">
         <view class="list-item-left">单号：89898989er9e9r89e8r</view>
@@ -22,7 +22,7 @@
       <view class="list-item-row list-item-bottom flex justify-between">
         <view class="list-item-left">{{ dayjs(item.expectServiceTime).format('YYYY-MM-DD HH:mm') }}</view>
         <view class="list-item-right">
-          <nut-button type="default" v-if="item.manipulatorsUserPhone" size="small"
+          <nut-button type="default" v-if="item.manipulatorsUserPhone && userType === '0'" size="small"
             @click="() => handleContact(item)">联系飞手</nut-button>
         </view>
       </view>
@@ -34,6 +34,11 @@ import dayjs from 'dayjs'
 
 const props = defineProps({
   data: { type: Array, default: () => [] },
+  /**
+   * 0:用户
+   * 1:飞手
+   */
+  userType: { type: String, default: '0' },
 })
 
 const handleContact = (row: any) => {

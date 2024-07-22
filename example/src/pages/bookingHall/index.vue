@@ -27,10 +27,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import List from './List.vue'
-import dataJson from './data.json'
 import { onShareAppMessage } from '@dcloudio/uni-app'
 import { getTaskList } from '../../api/uav'
-// import { type TaskItem } from '@/api/type.d'
 
 const active = ref(0)
 // dataJson.result

@@ -2,13 +2,13 @@
   <view class="order-page">
     <nut-searchbar v-model="search.keyword" custom-class="search" shape="round"
       placeholder="请输入订单名称/编号"></nut-searchbar>
-    <nut-tabs v-model="userType" type="smile" size="large">
+    <nut-tabs v-model="userType" type="smile" size="large" @change="handleTabsChange">
       <nut-tab-pane title="我的发单" pane-key="0">
-        <List :data="myCreateOrders" v-if="myCreateOrders.length" />
+        <List :data="myCreateOrders" :userType="userType" v-if="myCreateOrders.length" />
         <nut-empty v-else image="https://oss.6780.cn/pilot/empty.png" description="暂无订单"></nut-empty>
       </nut-tab-pane>
       <nut-tab-pane title="我的接单" pane-key="1">
-        <List :data="myOfferOrders" v-if="myOfferOrders.length" />
+        <List :data="myOfferOrders" :userType="userType" v-if="myOfferOrders.length" />
         <nut-empty v-else image="https://oss.6780.cn/pilot/empty.png" description="暂无订单"></nut-empty>
       </nut-tab-pane>
     </nut-tabs>
@@ -33,10 +33,13 @@ onMounted(() => {
   uni.showShareMenu({ withShareTicket: true })
   fetchOrders()
 })
+const handleTabsChange = () => {
+  fetchOrders()
+}
 const fetchOrders = () => {
   getMyTask({
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 100,
     type: userType.value
   }).then(res => {
     if (res.code === 0) {

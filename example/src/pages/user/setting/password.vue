@@ -78,11 +78,11 @@ const onSubmit = async (values: Record<string, any>) => {
   formRef.value.validate().then(async ({ valid, errors }: any) => {
     if (!valid) return
     if (!form.code) {
-      showToast({ title: '请输入验证码' })
+      showToast('请输入验证码')
       return
     }
     console.log('onSubmit', values)
-    showToast({ title: '修改成功' })
+    showToast('修改成功')
     redirectBack()
   })
 }
