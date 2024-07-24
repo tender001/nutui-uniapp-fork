@@ -22,7 +22,7 @@ export const postCreateTask = (data: any): Promise<any> => {
     return requests.post('/uav/createTask', data)
 }
 // 任务详情
-export const getDetail = (data: { taskId: string }): Promise<TaskItem> => {
+export const getDetail = (data: { taskId: string }): Promise<Response<TaskItem>> => {
     return requests.get('/uav/detail', data)
 }
 // 完成任务

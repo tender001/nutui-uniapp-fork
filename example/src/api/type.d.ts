@@ -82,4 +82,5 @@ export interface TaskItem {
   workPic?: string;
   // 作业备注，可选
   workRemark?: string;
+  money?: string;
 }

@@ -24,6 +24,8 @@
         <view class="list-item-right">
           <nut-button type="default" v-if="item.manipulatorsUserPhone && userType === '0'" size="small"
             @click="() => handleContact(item)">联系飞手</nut-button>
+          <nut-button type="default" v-if="item.manipulatorsUserPhone && userType === '1'" size="small"
+            @click="() => handleStartJob(item)">开始作业</nut-button>
         </view>
       </view>
     </view>
@@ -31,6 +33,7 @@
 </template>
 <script setup lang="ts">
 import dayjs from 'dayjs'
+import { redirectTo } from '@/utils/index'
 
 const props = defineProps({
   data: { type: Array, default: () => [] },
@@ -45,6 +48,9 @@ const handleContact = (row: any) => {
   uni.makePhoneCall({
     phoneNumber: row?.manipulatorsUserPhone  //仅为示例
   });
+}
+const handleStartJob = (row: any) => {
+  redirectTo('/pages/details/index?id=' + row?.taskId)
 }
 </script>
 

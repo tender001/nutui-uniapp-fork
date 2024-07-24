@@ -38,7 +38,7 @@
           </view>
         </template>
         <template #desc>
-          <nut-button plain size="small" type="primary" @click="() => handleTakeOrder(item)">确认接单</nut-button>
+          <nut-button plain size="small" type="primary" @click="() => handleTakeOrder(item, index)">确认接单</nut-button>
         </template>
 
       </nut-cell>
@@ -71,10 +71,10 @@ onShow(async () => {
 
 })
 
-const handleTakeOrder = async (row: any) => {
+const handleTakeOrder = async (row: any, index: number) => {
   // getReceivingTask
   console.log('userinfo', userinfo)
-  const res = await getReceivingTask({ taskId: row.taskId || 26 })
+  const res = await getReceivingTask({ taskId: row.taskId || index + 1 })
   const { code } = res
   if (code === 0) {
     showToast('接单成功')
@@ -84,11 +84,8 @@ const handleTakeOrder = async (row: any) => {
   if (code === 100) {
     redirectTo('/pages/user/auth/pilot')
     return
-    return
   }
 
-  debugger
-  console.log('handleTakeOrder', res)
 }
 </script>
 
