@@ -18,8 +18,8 @@
     <view class="booking-content">
       <nut-button custom-style="font-weight: bold" type="primary"
         @click="navigateTo('/pages/release/index')">发布飞行任务</nut-button>
-      <!-- https://oss.6780.cn/pilot/more.png -->
-      <view class="booking-service">联系客服发单 <nut-icon size="14" name="right" />
+      <view class="booking-service"><button open-type="contact" class="service-btn">联系客服发单</button> <nut-icon size="14"
+          name="right" />
       </view>
     </view>
   </view>

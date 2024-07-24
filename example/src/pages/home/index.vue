@@ -12,7 +12,7 @@
               <BookingCard />
               <!-- <nut-button size="large" type="primary" @click="navigateTo('/pages/release/index')">发布飞行任务</nut-button> -->
 
-              <CurOrder />
+              <CurOrder :data="curOrder" />
               <MySwiper />
             </div>
           </div>
@@ -44,11 +44,22 @@
 import { ref } from 'vue'
 import { onShareAppMessage } from '@dcloudio/uni-app'
 import { redirectTo } from '@/utils/index'
+import { getMyTask } from '@/api/uav';
+import { getToken } from '@/packages/utils'
+import type { TaskItem } from '@/api/type'
 
 
 
 const userType = ref('1')
 const pilotStatus = ref(1)
+const curOrder = ref<TaskItem>()
+
+onShow(async () => {
+  if (getToken()) {
+    fetchOrders()
+  }
+
+})
 onShareAppMessage(() => {
   return {
     title: '分享的标题',
@@ -59,6 +70,20 @@ onShareAppMessage(() => {
 })
 const navigateTo = (path: string) => {
   redirectTo(path)
+}
+const fetchOrders = () => {
+  getMyTask({
+    pageNum: 1,
+    pageSize: 1,
+    type: 0,
+    state: 0,
+  }).then(res => {
+    if (res.code === 0) {
+      curOrder.value = res.data.list[0]
+    }
+
+
+  })
 }
 </script>
 <route lang="json">{

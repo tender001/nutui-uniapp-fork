@@ -2,7 +2,8 @@
     <view class="my-swiper">
         <!--  :auto-play="3000" -->
         <nut-swiper @change="onChange">
-            <nut-swiper-item v-for="(item, index) in list" :key="index" custom-style="height: 90px; border-radius: 36px; overflow: hidden;">
+            <nut-swiper-item v-for="(item, index) in list" :key="index"
+                custom-style="height: 136px; border-radius: 16px; overflow: hidden;">
                 <!-- <img :src="item" class="swiper-img" alt="" custom-style="height: 100%; width: 100%" draggable="false" /> -->
                 <image :src="item" class="swiper-img" mode="widthFix" :draggable="false" />
             </nut-swiper-item>
@@ -15,13 +16,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 const list = ref([
-    'https://storage.360buyimg.com/jdc-article/NutUItaro34.jpg',
-    'https://storage.360buyimg.com/jdc-article/NutUItaro2.jpg',
-    'https://storage.360buyimg.com/jdc-article/welcomenutui.jpg',
-    'https://storage.360buyimg.com/jdc-article/fristfabu.jpg'
+    'https://oss.6780.cn/pilot/banner1.jpg',
+    'https://oss.6780.cn/pilot/banner2.jpg',
 ])
 const val = ref(1)
-const onChange = (index:number) => {
+const onChange = (index: number) => {
     val.value = index + 1
 }
 </script>
@@ -33,10 +32,12 @@ const onChange = (index:number) => {
     .swiper-img {
         width: 100%;
     }
-    :deep(.nut-swiper-item){
-        border-radius: 32px;
+
+    :deep(.nut-swiper-item) {
+        border-radius: 16px;
         overflow: hidden;
     }
+
     .swiper-pagination {
         position: absolute;
         bottom: 0;

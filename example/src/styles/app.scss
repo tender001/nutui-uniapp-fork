@@ -126,3 +126,15 @@ page,
 .nut-button--primary {
   color:#000 !important;
 }
+.service-btn {
+  background: transparent;
+  font-size: unset;
+  padding: unset;
+  color: unset;
+  display: unset;
+  text-align: unset;
+  margin: unset;
+}
+.service-btn:after {
+  display: none;
+}

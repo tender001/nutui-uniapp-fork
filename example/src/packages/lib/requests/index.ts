@@ -78,7 +78,7 @@ export function useRequests(requestsConfig: RequestsConfig = {}) {
       }
       if (code && code !== successCode) {
         uni.hideToast()
-        uni.showToast({ title: msg, icon: 'none' })
+        uni.showToast({ title: msg || '请求异常', icon: 'none' })
       }
       return response?.data
     },

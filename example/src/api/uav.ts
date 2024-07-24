@@ -39,7 +39,7 @@ export const postLogin = (data: any): Promise<any> => {
     // return requests.post('/uav/testlogin', data)
 }
 // 我的任务列表 type 0-我的发单 1-我的接单
-export const getMyTask = (params: { pageNum: number, pageSize: number, type: number | string }): Promise<Response<{ list: TaskItem[], page: Page }>> => {
+export const getMyTask = (params: { pageNum: number, pageSize: number, type: number | string, state?: number }): Promise<Response<{ list: TaskItem[], page: Page }>> => {
     return requests.get('/uav/myTask', params)
 }
 // 支付回调

@@ -20,9 +20,18 @@
             name="arrow-right"></nut-icon></view>
       </view>
       <nut-cell-group custom-class="nav-menu">
-        <nut-cell is-link title="联系客服" @click="handleWaiting">
 
-        </nut-cell>
+        <!-- <nut-cell is-link @click="">
+          <template #title>
+            <button open-type="contact" class="service-btn">
+              联系客服
+            </button>
+          </template>
+</nut-cell> -->
+        <button open-type="contact" class="service-btn">
+          <nut-cell title="联系客服" is-link @click="">
+          </nut-cell>
+        </button>
         <nut-cell is-link title="设置" @click="onClickMenu('/pages/user/setting/index')">
         </nut-cell>
         <nut-cell is-link title="意见反馈" @click="handleWaiting">
