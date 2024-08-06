@@ -20,7 +20,20 @@
 import { reactive } from 'vue'
 import { getMyTask } from '../../api/uav'
 import List from './List.vue'
+import { orderStateList } from '@/utils/constant'
+import { useAppStore } from '@/store'
 
+const appStore = useAppStore()
+
+const categoryList = computed(() => {
+  return (appStore.enums.cate[0]?.categoryList || []).map(item => {
+    return {
+      ...item,
+      text: item.name,
+      value: item.id
+    }
+  })
+})
 const userType = ref('0')
 const myCreateOrders = ref([] as any)
 const myOfferOrders = ref([] as any)
@@ -46,7 +59,8 @@ const fetchOrders = () => {
       const list = res.data.list.map((item: any) => {
         return {
           ...item,
-          state: item.state === 0 ? '待接单' : item.state === 1 ? '待取货' : item.state === 2 ? '待交付' : '已完成',
+          stateName: orderStateList.find((it: any) => it.value === item.state)?.text || '-',
+          taskCategoryName: categoryList.value.find((it: any) => it.value === item.taskCategory)?.text || '-',
           money: item.price * item.acreNum,
         }
       })

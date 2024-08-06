@@ -14,7 +14,8 @@ export const postBindPhoneNumber = (data: { code: string, encryptedData: string,
     return requests.post('/uav/bindPhoneNumber', data)
 }
 // 支付下单
-export const postCreateOrder = (data: { buyCount: number, buyPrice: number, id?: string, type?: number }): Promise<any> => {
+export const postCreateOrder = (data: any): Promise<any> => {
+    // export const postCreateOrder = (data: { buyCount: number, buyPrice: number, id?: string, type?: number }): Promise<any> => {
     return requests.post('/uav/createOrder', data)
 }
 // 支付下单
@@ -62,3 +63,8 @@ export const postUpdateUserInfo = (data: { avatarUrl?: string, code?: number, ni
 export const getUserInfo = (): Promise<any> => {
     return requests.get('/uav/userInfo')
 }
+// 编辑任务信息
+export const postEditTask = (data: { id?: string, state?: number, signPic?: string, commission?: number, remark?: string }): Promise<any> => {
+    return requests.post('/uav/editTask', data)
+}
+

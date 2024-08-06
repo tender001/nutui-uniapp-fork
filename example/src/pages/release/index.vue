@@ -5,16 +5,20 @@ import dayjs from 'dayjs'
 import { postCreateTask } from '@/api/uav'
 import { useUserStore } from '@/store/user'
 import { redirectTo, showToast } from '../../utils'
+import { useAppStore } from '@/store'
+
+const appStore = useAppStore()
+// appStore.setEnums()
 
 const ruleForm = ref<any>(null)
-const formData = reactive({
+const formData = reactive<any>({
   expectServiceTime: dayjs().format('YYYY-MM-DD'),//[date2Str(new Date())],
+  taskCategory: [],
+  taskCategoryRow: {},
   name: '',
   orderType: '1',
   acreNum: 100,
-  money: 1000,
   remark: '高空化肥喷洒',
-  city: [1, 7],
   address: '白菜村菊花小园',
   /** 余额抵扣 */
   deduction: false,
@@ -33,20 +37,28 @@ const orderMaps = [{
   value: '3', describe: '置顶单服务费（含任务推送给100个飞手）', price: 300
 }]
 const userStore = useUserStore()
-// const userStore = {Userinfo:{name:'',phone:''}}
 const userinfo = computed(() => userStore.userinfo)
+const categoryList = computed(() => {
+  return (appStore.enums.cate[0]?.categoryList || []).map(item => {
+    return {
+      ...item,
+      text: item.name,
+      value: item.id
+    }
+  })
+})
 const selectTypeData = computed(() => {
   const row = orderMaps.find(item => item.value === formData.orderType)
   return row || orderMaps[0]
 })
 const payTotal = computed(() => {
-  const row = orderMaps.find(item => item.value === formData.orderType)
-  return selectTypeData.value.price + Number(formData.money || '0')
+  return selectTypeData.value.price + (Number(formData.acreNum) * formData.taskCategoryRow?.price)
 })
 const switchVisible = reactive<Record<string, boolean>>({
   expectServiceTime: false,
   agreement: false,
-  ask: false
+  ask: false,
+  pay: false
 })
 const changeSwitch = (cellKey: string, isShow: boolean) => {
   console.log(cellKey)
@@ -60,22 +72,31 @@ const handleSelectDate = (param: any) => {
   console.log('handleSelectdate', param)
 
 }
+const handleTaskCategoryChange = ({ selectedValue, selectedOptions }: any) => {
+  formData.taskCategory = selectedValue
+  formData.taskCategoryRow = selectedOptions[0]
+  changeSwitch('taskCategory', false)
+}
 const submitParams = computed<any>(() => {
   return {
     ...formData,
-    city: formData.city.toString(),
+    // city: formData.city.toString(),
     expectServiceTime: dayjs(formData.expectServiceTime).format("YYYY-MM-DD HH:mm"),
+    taskCategory: formData.taskCategory[0],
+    price: formData.taskCategoryRow.price,
     "concatName": userinfo.value.nickName,
     "concatPhone": userinfo.value.phone,
     "latitude": 0,
     "longitude": 0,
-    // "manipulatorsUserId": 0,
-    "price": 5,
+    money: 0.01,// payTotal.value,
     "state": 0,
-    "taskCategory": 1,
     "workPic": "",
     "workRemark": "",
-    nickName: formData.remark
+    remark: formData.remark,
+    extData: JSON.stringify({
+      remark: formData.remark,
+      money: payTotal.value,
+    }),
   }
 })
 const handleSubmit = () => {
@@ -87,21 +108,8 @@ const handleSubmit = () => {
       if (!formData.agreement) {
         return showToast('请阅读并同意服务订单权益条款')
       }
-      const res = await postCreateTask(submitParams.value)
-      if (res.code === 0) {
-        showToast('发布成功')
-        redirectTo('/pages/details/index?id=' + res.data)
-      }
-      // uni.requestPayment({
-      //   provider: 'alipay',
-      //   orderInfo: 'orderInfo', //微信、支付宝订单数据 【注意微信的订单信息，键值应该全部是小写，不能采用驼峰命名】
-      //   success: function (res) {
-      //     console.log('success:' + JSON.stringify(res));
-      //   },
-      //   fail: function (err) {
-      //     console.log('fail:' + JSON.stringify(err));
-      //   }
-      // });
+      switchVisible.pay = true
+
       hasFail.value = false
     } else {
       hasFail.value = true
@@ -110,12 +118,44 @@ const handleSubmit = () => {
 
   })
 }
+onMounted(() => {
+  setTimeout(() => {
+    const taskCategoryRow = categoryList.value[0]
+    formData.taskCategoryRow = taskCategoryRow
+    formData.taskCategory = [taskCategoryRow.value]
+  }, 1000);
+})
 watch(() => formData, (val) => {
   console.log('formData----', val)
   if (hasFail.value) {
     ruleForm.value.validate()
   }
 }, { immediate: true, deep: true })
+const handlePay = async (payType: number) => {
+  const { data } = await postCreateTask({
+    ...submitParams.value,
+    payType
+  })
+  if (payType === 1) {
+    uni.requestPayment({
+      ...data,
+      package: data.package || data.packageValue,
+      success: (res: any) => {
+        console.log('success--', res)
+        showToast('发布成功')
+        redirectTo('/pages/details/index?id=' + data.id)
+      },
+      fail: (res: any) => {
+        console.log('fail--', res)
+      },
+    });
+
+  } else {
+    showToast('发布成功')
+    redirectTo('/pages/details/index?id=' + data)
+  }
+
+}
 
 
 </script>
@@ -123,15 +163,18 @@ watch(() => formData, (val) => {
 <template>
   <div class="release-task">
     <nut-form ref="ruleForm" :model-value="formData" :rules="{
+      taskCategory: [
+        { required: true, message: '请选择任务类型' },
+      ],
       expectServiceTime: [
         { required: true, message: '请选择日期' },
       ],
       address: [
         { required: true, message: '请填写地址' },
       ],
-      money: [
-        { required: true, message: '请填写佣金' },
-      ],
+      // money: [
+      //   { required: true, message: '请填写佣金' },
+      // ],
       remark: [
         { required: true, message: '请填写备注' },
       ],
@@ -139,7 +182,20 @@ watch(() => formData, (val) => {
         { required: true, message: '请填写面积' },
       ],
     }">
-      <Pilot />
+      <!-- <Pilot @change="" /> -->
+      <!-- <nut-form-item label="任务类型" prop="address">
+        <nut-picker v-model="formData.taskCategory" :columns="categoryList" :title="String(val)" @confirm="confirm" />
+      </nut-form-item> -->
+      <!--   -->
+      <nut-form-item label="任务类型" prop="taskCategory" :show-error-message="false">
+        <nut-cell :desc="formData.taskCategoryRow?.text ? formData.taskCategoryRow?.text : '请选择'"
+          @click="changeSwitch('taskCategory', true)" is-link />
+
+        <nut-popup v-model:visible="switchVisible.taskCategory" position="bottom">
+          <nut-picker v-model="formData.taskCategory" :columns="categoryList" title="请选择任务类型"
+            @confirm="handleTaskCategoryChange" @cancel="changeSwitch('taskCategory', false)" />
+        </nut-popup>
+      </nut-form-item>
       <nut-form-item label="日期" prop="expectServiceTime" :show-error-message="false">
         <nut-cell :desc="formData.expectServiceTime ? formData.expectServiceTime : '请选择'"
           @click="changeSwitch('expectServiceTime', true)" is-link />
@@ -147,19 +203,7 @@ watch(() => formData, (val) => {
           :start-date="dayjs().format('YYYY-MM-DD')" safe-area-inset-bottom
           @close="changeSwitch('expectServiceTime', false)" @choose="handleChooseDate" @select="handleSelectDate" />
       </nut-form-item>
-      <!-- <nut-cell-group> -->
-      <!-- <pre>2222{{ formData.city }}{{ formData.date }}</pre> -->
-      <!-- <nut-form-item label="地区" prop="city" :show-error-message="false">
-        <Address v-model="formData.city"></Address> -->
-      <!-- </nut-form-item> -->
 
-      <!-- <nut-cell is-link>
-        <template #title>
-          <div>详细地址
-            <nut-tag color="#E9E9E9" text-color="#999999"> 非必选 </nut-tag>
-          </div>
-        </template>
-</nut-cell> -->
       <nut-form-item label="详细地址" prop="address">
         <nut-input v-model="formData.address" class="nut-input-text" placeholder="请填写详细地址"
           input-align="right"></nut-input>
@@ -172,12 +216,12 @@ watch(() => formData, (val) => {
             <div>亩</div>
           </template></nut-input>
       </nut-form-item>
-      <nut-form-item label="佣金" prop="money" :show-error-message="false">
+      <!-- <nut-form-item label="佣金" prop="money" :show-error-message="false">
         <nut-input v-model="formData.money" class="nut-input-text" placeholder="请填写金额" type="number"
           input-align="right"><template #right>
             <div>元</div>
           </template></nut-input>
-      </nut-form-item>
+      </nut-form-item> -->
       <nut-form-item prop="remark" :show-error-message="false">
         <nut-textarea :rows="3" placeholder="详细的任务描述，更容易让飞手接单哦~（如金额是否包含差旅费、成果交付的要求等）" v-model="formData.remark"
           limit-show :max-length="300" />
@@ -223,12 +267,12 @@ watch(() => formData, (val) => {
 
 
           <div class="cell-desc">
-            <nut-cell>
+            <!-- <nut-cell>
               <template #title>
                 <div class="desc">佣金（若订单免责取消，可全额原路退回）</div>
               </template>
               <template #desc><nut-price :price="formData.money" :decimal-digits="0" size="small" /></template>
-            </nut-cell>
+            </nut-cell> -->
             <nut-cell>
               <template #title>
                 <div>{{ selectTypeData?.describe }}</div>
@@ -267,7 +311,7 @@ watch(() => formData, (val) => {
           <div class="link" @click="switchVisible.agreement = true">《服务订单权益条款》</div>
         </nut-checkbox>
         <nut-button type="primary" size="large" @click="handleSubmit">
-          确认支付并发布
+          发布任务
         </nut-button>
       </div>
       <nut-popup v-model:visible="switchVisible.agreement" @close="switchVisible.agreement = false" position="bottom"
@@ -306,7 +350,7 @@ watch(() => formData, (val) => {
 
 
     </nut-form>
-
+    <PayPopup :visible="switchVisible.pay" @ok="handlePay" :money="payTotal" @close="switchVisible.pay = false" />
 
 
 

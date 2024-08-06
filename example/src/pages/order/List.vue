@@ -2,15 +2,15 @@
   <view class="order-list flex flex-col">
     <view v-for="(item, index) in   data as any  " :key="index" class="order-list-item">
 
-      <view class="list-item-row list-item-top flex justify-between">
-        <view class="list-item-left">单号：89898989er9e9r89e8r</view>
-        <view class="list-item-right">{{ item.state }}</view>
+      <view class="list-item-row list-item-top flex justify-between" @click="() => handleGoDetails(item)">
+        <view class="list-item-left">单号：{{ item.taskNo }}</view>
+        <view class="list-item-right">{{ item.stateName }}</view>
       </view>
       <view class="list-item-row list-item-content flex justify-between">
         <view class="list-item-left">
           <view class="flex  " style="align-items: center;">
             <image style="width: 30px;height: 30px;" src="https://oss.6780.cn/pilot/zhibaofanghu.png" />
-            <text>植保防护</text>
+            <text>{{ item.taskCategoryName }}</text>
           </view>
           <nut-price :price="item.money" size="normal" />
         </view>
@@ -24,8 +24,14 @@
         <view class="list-item-right">
           <nut-button type="default" v-if="item.manipulatorsUserPhone && userType === '0'" size="small"
             @click="() => handleContact(item)">联系飞手</nut-button>
-          <nut-button type="default" v-if="item.manipulatorsUserPhone && userType === '1'" size="small"
+          <nut-button type="default" v-if="item.state === -1 && userType === '0'" size="small"
+            @click="() => handlePayContinue(item)">去支付</nut-button>
+          <nut-button type="default" v-if="item.state === 1 && userType === '1'" size="small"
             @click="() => handleStartJob(item)">开始作业</nut-button>
+          <nut-button type="default" v-if="item.state === 2 && userType === '1'" size="small"
+            @click="() => handleStartJob(item)">完成作业</nut-button>
+          <nut-button type="default" v-if="item.state === 3 && userType === '1'" size="small"
+            @click="() => handleStartJob(item)">确认挂账</nut-button>
         </view>
       </view>
     </view>
@@ -34,7 +40,23 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
 import { redirectTo } from '@/utils/index'
+import { useAppStore } from '@/store'
+import { postCreateOrder } from '@/api/uav';
 
+const appStore = useAppStore()
+
+const categoryList = computed(() => {
+  return (appStore.enums.cate[0]?.categoryList || []).map(item => {
+    return {
+      ...item,
+      text: item.name,
+      value: item.id
+    }
+  })
+})
+const categoryName = computed(() => {
+  return categoryList.value.find(item => item.value === taskInfo.value?.taskCategory)?.text || '-'
+})
 const props = defineProps({
   data: { type: Array, default: () => [] },
   /**
@@ -50,7 +72,26 @@ const handleContact = (row: any) => {
   });
 }
 const handleStartJob = (row: any) => {
-  redirectTo('/pages/details/index?id=' + row?.taskId)
+  redirectTo('/pages/details/index?id=' + row?.id)
+}
+const handleGoDetails = (row: any) => {
+  redirectTo('/pages/details/index?id=' + row?.id)
+}
+const handlePayContinue = async (row: any) => {
+  const { data } = await postCreateOrder({ id: row.id, price: row.price * row?.acreNum })
+  uni.requestPayment({
+    ...data,
+    package: data.package || data.packageValue,
+    success: (res: any) => {
+      console.log('success--', res)
+      showToast('支付成功')
+      fetchData()
+    },
+    fail: (res: any) => {
+      console.log('fail--', res)
+    },
+  });
+
 }
 </script>
 

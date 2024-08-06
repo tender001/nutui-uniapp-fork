@@ -67,7 +67,7 @@ export interface TaskItem {
   // 发布人昵称，可选
   nickName?: string;
   // 订单类型：0.普通单 1.加急单 2.置顶单，可选
-  orderType?: number;
+  orderType: number;
   // 价格(单位：分)，可选
   price?: number;
   // 接单时间，可选
@@ -75,7 +75,7 @@ export interface TaskItem {
   // 状态 0.待接单 1.已接单 2.已完成，可选
   state?: number;
   // 任务分类，可选
-  taskCategory?: number;
+  taskCategory: number;
   // 发布人id，可选
   userId?: number;
   // 作业照片，可选
@@ -83,4 +83,6 @@ export interface TaskItem {
   // 作业备注，可选
   workRemark?: string;
   money?: string;
+  /** 任务备注 */
+  remark?: string;
 }

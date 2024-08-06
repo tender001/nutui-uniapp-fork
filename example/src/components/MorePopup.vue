@@ -1,5 +1,5 @@
 <template>
-  <nut-popup v-model:visible="props.visible" position="bottom" closeable round @close=" emits('close')">
+  <nut-popup v-model:visible="props.visible" position="bottom" closeable round @close="emits('close')">
     <view class="more-card">
       <view class="more-card-header">
         更多操作

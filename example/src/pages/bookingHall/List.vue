@@ -23,7 +23,7 @@
         <view class="cell-body-title">
           <view class="cell-body-title-text">
             <nut-icon v-if="item.orderType > 1" name="https://oss.6780.cn/pilot/hot.png" size="24px"></nut-icon>
-            <text> {{ item.requireDescription || '我是一定需求描述备注' }}</text>
+            <text> {{ item.remark || '我是一定需求描述备注' }}</text>
           </view>
           <view class="cell-body-title-price"><nut-price :price="item.money" size="large" :decimal-digits="0"
               position="after" symbol="元" />
@@ -50,21 +50,25 @@
 </template>
 
 <script setup lang="ts">
-import dayjs from 'dayjs'
 import { useAppStore } from '@/store'
 import { showDay } from '@/utils/date'
 import { useUserStore } from '@/store/user'
 import { getReceivingTask } from '../../api/uav'
 import { redirectTo, showToast } from '../../utils'
+import type { TaskItem } from '../../api/type'
 
 const appStore = useAppStore()
 const userStore = useUserStore()
 
 const userinfo = computed(() => userStore.userinfo)
-// getEnumsValueName
-const props = defineProps({
-  data: { type: Array, default: () => [] },
-  tab: { type: String, default: '' }
+
+interface Props {
+  data: TaskItem[],
+  tab: string
+}
+const props = withDefaults(defineProps<Props>(), {
+  data: [],
+  tab: ''
 })
 onShow(async () => {
 

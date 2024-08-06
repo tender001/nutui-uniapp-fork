@@ -1,6 +1,6 @@
 <template>
     <view class="order-details">
-        <view class="fixed-top" v-if="taskInfo?.state === 0">
+        <view class="fixed-top" v-if="taskInfo?.state === 0 || taskInfo?.state === -1">
             <view class="fixed-top-title">正在寻找飞手...</view>
             <view class="fixed-top-icon">
                 <nut-icon color="#000" size="24" name="more-x" @click="moreVisible = true" />
@@ -9,14 +9,17 @@
         <view class="fixed-top" v-if="taskInfo?.state === 1">
             <view class="fixed-top-title">等待飞手开始任务</view>
         </view>
+        <view class="fixed-top" v-if="taskInfo?.state === 2">
+            <view class="fixed-top-title">任务已开始</view>
+        </view>
         <view class="order-details-body">
             <nut-button custom-class="info-btn" type="default" @click="showDetail = !showDetail">
-                任务详情<nut-icon custom-style="width: 12px;height: 12px;" size="16"
+                任务详情<nut-icon custom-style="width: 12px;height: 12px;margin-left: 6px" size="14"
                     :name="showDetail ? 'arrow-down' : 'arrow-up'" />
             </nut-button>
             <view>
                 <nut-cell-group :custom-class="showDetail ? 'booking-cell-group show' : 'booking-cell-group'">
-                    <nut-cell title="任务类型" desc="植保飞防" />
+                    <nut-cell title="任务类型" :desc="categoryName" />
                     <nut-cell title="日期" :desc="showDay(taskInfo?.expectServiceTime)" />
                     <nut-cell title="详细地址" :desc="taskInfo?.address" />
                     <nut-cell title="面积" :desc="`${taskInfo?.acreNum}亩`" />
@@ -26,7 +29,7 @@
 
 
             </view>
-            <view class="order-details-card" v-if="taskInfo?.state === 0">
+            <view class="order-details-card" v-if="isOwner">
                 <view class="card-title"><nut-icon color="#000" custom-style="width: 12px;height: 12px;"
                         name="https://oss.6780.cn/pilot/answer_quickly@3x.png" />想要更快应答？快来提升飞手接单意愿</view>
                 <view class="order-details-cells">
@@ -35,9 +38,9 @@
                             <nut-button type="primary">去添加</nut-button>
                         </template>
                     </nut-cell>
-                    <nut-cell title="预发费用" sub-title="佣金更多，增加更多飞手接单">
+                    <nut-cell title="预付费用" v-if="taskInfo?.state === -1" sub-title="预付费用，飞手更快接单">
                         <template #desc>
-                            <nut-button type="primary">去支付</nut-button>
+                            <nut-button type="primary" @click="handlePayContinue">去支付</nut-button>
                         </template>
                     </nut-cell>
                 </view>
@@ -88,25 +91,50 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 import { useInit } from '@packages/hooks'
-import { getDetail } from '../../api/uav'
+import { getDetail, postCreateOrder, postEditTask } from '../../api/uav'
 import { showDay } from '@/utils/date'
 import type { TaskItem } from '../../api/type';
+import { showToast } from '../../utils'
+import { useUserStore } from '@/store/user'
 
 const moreVisible = ref(false)
 const taskId = ref('')
 const taskInfo = ref<TaskItem>()
 const showDetail = ref(false)
 const { getLocationParams } = useInit()
+const userStore = useUserStore()
+import { useAppStore } from '@/store'
+
+const appStore = useAppStore()
+
+const categoryList = computed(() => {
+    return (appStore.enums.cate[0]?.categoryList || []).map(item => {
+        return {
+            ...item,
+            text: item.name,
+            value: item.id
+        }
+    })
+})
+const categoryName = computed(() => {
+    return categoryList.value.find(item => item.value === taskInfo.value?.taskCategory)?.text || '-'
+})
 onMounted(() => {
     uni.showShareMenu({ withShareTicket: true })
     fetchData()
+
 })
 onShow(() => {
     taskId.value = getLocationParams('id')
 })
+const isOwner = computed(() => {
+    console.log('userStore.userinfo.userId', userStore.userinfo.userId)
+    return taskInfo.value?.userId === userStore.userinfo.userId
+})
+// -1.待发布 0.待接单 1.已接单 2.进行中 3.已完成 4.已取消
 const fetchData = async () => {
+    await userStore.setUserinfo()
     const res = await getDetail({ taskId: taskId.value })
-    console.log('xxx', res)
     if (res?.code === 0) {
         taskInfo.value = {
             ...res.data,
@@ -116,8 +144,31 @@ const fetchData = async () => {
 const handleFinishJob = () => {
     console.log('handleFinishJob')
 }
-const handleStartJob = () => {
-    console.log('handleStartJob')
+const handleStartJob = async () => {
+    const res = await postEditTask({ id: taskId.value, state: 2 })
+    if (res?.code === 0) {
+        showToast('开始成功')
+        fetchData()
+    }
+}
+const handlePayContinue = async () => {
+    const { data } = await postCreateOrder({ id: taskId.value, price: taskInfo.value?.price * taskInfo.value?.acreNum })
+    uni.requestPayment({
+        ...data,
+        package: data.package || data.packageValue,
+        success: (res: any) => {
+            console.log('success--', res)
+            showToast('支付成功')
+            fetchData()
+        },
+        fail: (res: any) => {
+            console.log('fail--', res)
+        },
+    });
+
+}
+const handleEditTask = async (params: any) => {
+    const res = await postEditTask(params)
 }
 
 </script>
