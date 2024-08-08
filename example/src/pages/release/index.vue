@@ -6,11 +6,12 @@ import { postCreateTask } from '@/api/uav'
 import { useUserStore } from '@/store/user'
 import { redirectTo, showToast } from '../../utils'
 import { useAppStore } from '@/store'
+import { FormInst } from 'nutui-uniapp/components/form/types'
 
 const appStore = useAppStore()
 // appStore.setEnums()
 
-const ruleForm = ref<any>(null)
+const ruleForm = ref<FormInst>(null)
 const formData = reactive<any>({
   expectServiceTime: dayjs().format('YYYY-MM-DD'),//[date2Str(new Date())],
   taskCategory: [],
@@ -52,7 +53,7 @@ const selectTypeData = computed(() => {
   return row || orderMaps[0]
 })
 const payTotal = computed(() => {
-  return selectTypeData.value.price + (Number(formData.acreNum) * formData.taskCategoryRow?.price)
+  return (selectTypeData.value.price || 0) + (Number(formData.acreNum || 0) * (formData.taskCategoryRow?.price || 0))
 })
 const switchVisible = reactive<Record<string, boolean>>({
   expectServiceTime: false,
@@ -81,17 +82,14 @@ const submitParams = computed<any>(() => {
   return {
     ...formData,
     // city: formData.city.toString(),
-    expectServiceTime: dayjs(formData.expectServiceTime).format("YYYY-MM-DD HH:mm"),
+    expectServiceTime: dayjs(formData.expectServiceTime).format("YYYY-MM-DD HH:mm:ss"),
     taskCategory: formData.taskCategory[0],
     price: formData.taskCategoryRow.price,
+    totalPrice: payTotal.value,
     "concatName": userinfo.value.nickName,
     "concatPhone": userinfo.value.phone,
     "latitude": 0,
     "longitude": 0,
-    money: 0.01,// payTotal.value,
-    "state": 0,
-    "workPic": "",
-    "workRemark": "",
     remark: formData.remark,
     extData: JSON.stringify({
       remark: formData.remark,
@@ -101,7 +99,7 @@ const submitParams = computed<any>(() => {
 })
 const handleSubmit = () => {
 
-  ruleForm.value.validate().then(async ({ valid, errors }: any) => {
+  ruleForm.value?.validate().then(async ({ valid, errors }: any) => {
     if (valid) {
       console.log('success', formData)
 
@@ -128,7 +126,7 @@ onMounted(() => {
 watch(() => formData, (val) => {
   console.log('formData----', val)
   if (hasFail.value) {
-    ruleForm.value.validate()
+    ruleForm.value?.validate()
   }
 }, { immediate: true, deep: true })
 const handlePay = async (payType: number) => {

@@ -29,15 +29,23 @@
           </template>
 </nut-cell> -->
         <button open-type="contact" class="service-btn">
-          <nut-cell title="联系客服" is-link @click="">
+          <nut-cell title="联系客服" is-link>
           </nut-cell>
         </button>
         <nut-cell is-link title="设置" @click="onClickMenu('/pages/user/setting/index')">
         </nut-cell>
-        <nut-cell is-link title="意见反馈" @click="handleWaiting">
-        </nut-cell>
-        <nut-cell is-link title="微信消息提醒" @click="handleWaiting">
-        </nut-cell>
+        <!-- <nut-cell is-link title="意见反馈" @click="handleWaiting">
+        </nut-cell> -->
+        <button open-type="feedback" class="service-btn">
+          <nut-cell title="意见反馈" is-link>
+          </nut-cell>
+        </button>
+        <button open-type="liveActivity" @createliveactivity="handleCreateliveactivity" class="service-btn">
+          <nut-cell title="微信消息提醒" is-link>
+          </nut-cell>
+        </button>
+        <!-- <nut-cell is-link title="微信消息提醒" @click="handleWaiting">
+        </nut-cell> -->
 
 
 
@@ -95,6 +103,9 @@ const getOrderNums = () => {
 onMounted(async () => {
 
 })
+const handleCreateliveactivity = (evt: any) => {
+  console.log(evt.detail.code)
+}
 
 const onLogout = async () => {
   const res = await logout()

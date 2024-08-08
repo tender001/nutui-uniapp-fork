@@ -67,7 +67,6 @@ interface Props {
   tab: string
 }
 const props = withDefaults(defineProps<Props>(), {
-  data: [],
   tab: ''
 })
 onShow(async () => {
@@ -76,13 +75,11 @@ onShow(async () => {
 })
 
 const handleTakeOrder = async (row: any, index: number) => {
-  // getReceivingTask
-  console.log('userinfo', userinfo)
-  const res = await getReceivingTask({ taskId: row.taskId || index + 1 })
+  const res = await getReceivingTask({ taskId: row.id })
   const { code } = res
   if (code === 0) {
     showToast('接单成功')
-    redirectTo(`/pages/details/index?taskId=${row.taskId}`)
+    redirectTo(`/pages/details/index?id=${row.id}`)
 
   }
   if (code === 100) {

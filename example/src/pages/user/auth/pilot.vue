@@ -1,6 +1,6 @@
 <template>
     <view class="form-list">
-        <view class="form-list-title">成为小白菜飞手</view>
+        <view class="form-list-title">成为青创农服</view>
         <view class="form-list-content">
             <view class="content-title">
                 请完善以下证件信息
@@ -63,7 +63,7 @@
 import { ref, reactive } from 'vue'
 // import { type AuthRow } from '@/api/type.d'
 import { postAuth } from '@/api/uav'
-import { redirectBack, showToast } from '../../../utils'
+import { redirectBack, showToast, uploadUrl } from '../../../utils'
 import { useUserStore } from '../../../store/user'
 
 
@@ -86,7 +86,6 @@ const switchVisible = reactive<Record<string, boolean>>({
     ask: false
 })
 const userStore = useUserStore()
-const uploadUrl = ref(`https://qt.59pa.com/prod-api/iou/upload`)
 
 const handleUploadChange = (row: any, itemKey: string) => {
     const { data } = row.data

@@ -1,5 +1,5 @@
 <template>
-    <view class="cur-Order" v-if="data">
+    <view class="cur-Order" v-if="data?.id" @click="redirectTo(`/pages/details/index?id=${data?.id}`)">
         <image class="card-image" mode="widthFix" src="https://oss.6780.cn/pilot/cardbg@2x.png" />
         <view class="card-content">
             <view class="card-title">
@@ -9,24 +9,32 @@
             <view class="card-content">
 
                 <view class="card-content-info"> {{ showDay(data?.expectServiceTime) }} 预约 <nut-divider
-                        direction="vertical" /> 农业植保</view>
-                <view class="card-content-more">追加佣金更快应答，任务取消秒退款 <nut-button size="small"
+                        direction="vertical" /> {{ categoryName }}</view>
+                <!-- <view class="card-content-more">追加佣金更快应答，任务取消秒退款 <nut-button size="small"
                         custom-style="position:absolute;top:0;right:0;font-weight: bold;height: 33px;border-radius: 8px;"
                         custom-class="commission-btn" type="primary" @click="handleCommissionAdd">追加佣金</nut-button>
-                </view>
+                </view> -->
             </view>
         </view>
     </view>
 </template>
 <script setup lang="ts">
-import dayjs from 'dayjs'
 import { showDay } from '@/utils/date'
+import { useAppStore } from '@/store'
+import { redirectTo } from '@/utils/index'
 
 const props = defineProps({
     data: {
         type: Object,
         default: () => { },
     },
+})
+const appStore = useAppStore()
+
+
+
+const categoryName = computed(() => {
+    return appStore.getEnumsValueName('cate', props.data?.taskCategory!)
 })
 const handleCommissionAdd = () => {
     console.log('追加佣金');

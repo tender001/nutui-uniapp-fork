@@ -33,7 +33,7 @@ export const useAppStore = defineStore(
       getTaskCate().then(res => {
         enums.value = {
           ...enums.value,
-          cate: [res.data]
+          cate: res.data
         }
       })
     }

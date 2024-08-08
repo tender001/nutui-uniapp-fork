@@ -4,11 +4,11 @@
       placeholder="请输入订单名称/编号"></nut-searchbar>
     <nut-tabs v-model="userType" type="smile" size="large" @change="handleTabsChange">
       <nut-tab-pane title="我的发单" pane-key="0">
-        <List :data="myCreateOrders" :userType="userType" v-if="myCreateOrders.length" />
+        <List @change="fetchOrders" :data="myCreateOrders" :userType="userType" v-if="myCreateOrders.length" />
         <nut-empty v-else image="https://oss.6780.cn/pilot/empty.png" description="暂无订单"></nut-empty>
       </nut-tab-pane>
       <nut-tab-pane title="我的接单" pane-key="1">
-        <List :data="myOfferOrders" :userType="userType" v-if="myOfferOrders.length" />
+        <List @change="fetchOrders" :data="myOfferOrders" :userType="userType" v-if="myOfferOrders.length" />
         <nut-empty v-else image="https://oss.6780.cn/pilot/empty.png" description="暂无订单"></nut-empty>
       </nut-tab-pane>
     </nut-tabs>
@@ -61,7 +61,7 @@ const fetchOrders = () => {
           ...item,
           stateName: orderStateList.find((it: any) => it.value === item.state)?.text || '-',
           taskCategoryName: categoryList.value.find((it: any) => it.value === item.taskCategory)?.text || '-',
-          money: item.price * item.acreNum,
+
         }
       })
       if (userType.value === '0') {

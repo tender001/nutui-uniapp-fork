@@ -1,8 +1,8 @@
 <template>
   <view class="order-list flex flex-col">
-    <view v-for="(item, index) in   data as any  " :key="index" class="order-list-item">
+    <view v-for="(item, index) in  data  " :key="index" class="order-list-item" @click="() => handleGoDetails(item)">
 
-      <view class="list-item-row list-item-top flex justify-between" @click="() => handleGoDetails(item)">
+      <view class="list-item-row list-item-top flex justify-between">
         <view class="list-item-left">单号：{{ item.taskNo }}</view>
         <view class="list-item-right">{{ item.stateName }}</view>
       </view>
@@ -12,26 +12,27 @@
             <image style="width: 30px;height: 30px;" src="https://oss.6780.cn/pilot/zhibaofanghu.png" />
             <text>{{ item.taskCategoryName }}</text>
           </view>
-          <nut-price :price="item.money" size="normal" />
+          <nut-price :price="item.totalPrice" size="normal" />
         </view>
         <view class="list-item-right">
-          <view>￥{{ item.money }}</view>
-          <!-- <view>x1</view> -->
+          <view>￥{{ item.totalPrice }}</view>
         </view>
       </view>
       <view class="list-item-row list-item-bottom flex justify-between">
-        <view class="list-item-left">{{ dayjs(item.expectServiceTime).format('YYYY-MM-DD HH:mm') }}</view>
+        <view class="list-item-left" v-if="userType === '1'">{{ dayjs(item.receivingTime).format('YYYY-MM-DD HH:mm') }}
+        </view>
+        <view class="list-item-left" v-else>{{ dayjs(item.createTime).format('YYYY-MM-DD HH:mm') }}</view>
         <view class="list-item-right">
-          <nut-button type="default" v-if="item.manipulatorsUserPhone && userType === '0'" size="small"
+          <nut-button type="default" v-if="item.state === 1 && userType === '0'" size="small"
             @click="() => handleContact(item)">联系飞手</nut-button>
           <nut-button type="default" v-if="item.state === -1 && userType === '0'" size="small"
             @click="() => handlePayContinue(item)">去支付</nut-button>
           <nut-button type="default" v-if="item.state === 1 && userType === '1'" size="small"
             @click="() => handleStartJob(item)">开始作业</nut-button>
           <nut-button type="default" v-if="item.state === 2 && userType === '1'" size="small"
-            @click="() => handleStartJob(item)">完成作业</nut-button>
-          <nut-button type="default" v-if="item.state === 3 && userType === '1'" size="small"
-            @click="() => handleStartJob(item)">确认挂账</nut-button>
+            @click="() => handleFinishJob(item)">完成作业</nut-button>
+          <nut-button type="default" v-if="item.state === 3 && !item.signPic" size="small"
+            @click="() => handleSignature(item)">签字确认</nut-button>
         </view>
       </view>
     </view>
@@ -39,40 +40,40 @@
 </template>
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import { redirectTo } from '@/utils/index'
-import { useAppStore } from '@/store'
-import { postCreateOrder } from '@/api/uav';
+import { redirectTo, showToast } from '@/utils/index'
+import { postCreateOrder, postEditTask } from '@/api/uav';
+import type { TaskItem } from '@/api/type'
 
-const appStore = useAppStore()
 
-const categoryList = computed(() => {
-  return (appStore.enums.cate[0]?.categoryList || []).map(item => {
-    return {
-      ...item,
-      text: item.name,
-      value: item.id
-    }
-  })
-})
-const categoryName = computed(() => {
-  return categoryList.value.find(item => item.value === taskInfo.value?.taskCategory)?.text || '-'
-})
-const props = defineProps({
-  data: { type: Array, default: () => [] },
-  /**
-   * 0:用户
-   * 1:飞手
-   */
-  userType: { type: String, default: '0' },
+
+interface Props {
+  data: TaskItem[]
+  /** 0 农户 1 飞手 */
+  userType: '0' | '1'
+}
+const props = withDefaults(defineProps<Props>(), {
+  userType: '0',
 })
 
-const handleContact = (row: any) => {
+const emits = defineEmits(['change']);
+
+const handleContact = (row: TaskItem) => {
   uni.makePhoneCall({
-    phoneNumber: row?.manipulatorsUserPhone  //仅为示例
+    phoneNumber: row?.manipulatorsUserPhone!
   });
 }
-const handleStartJob = (row: any) => {
-  redirectTo('/pages/details/index?id=' + row?.id)
+const handleStartJob = async (row: TaskItem) => {
+  const res = await postEditTask({ id: row.id!, state: 2 })
+  if (res?.code === 0) {
+    showToast('开始成功')
+    emits('change')
+  }
+}
+const handleFinishJob = (row: TaskItem) => {
+  redirectTo('/pages/details/finish?id=' + row.id)
+}
+const handleSignature = (row: TaskItem) => {
+  redirectTo('/pages/details/signature?id=' + row.id)
 }
 const handleGoDetails = (row: any) => {
   redirectTo('/pages/details/index?id=' + row?.id)
@@ -85,7 +86,8 @@ const handlePayContinue = async (row: any) => {
     success: (res: any) => {
       console.log('success--', res)
       showToast('支付成功')
-      fetchData()
+      emits('change')
+
     },
     fail: (res: any) => {
       console.log('fail--', res)

@@ -119,6 +119,10 @@ export const getUserProfile = (cb?: () => void) => {
   })
 }
 /**
+ * 上传接口地址
+ */
+export const uploadUrl = 'https://qt.59pa.com/prod-api/uav/upload'
+/**
  * 上传文件
  * @param title
  */
@@ -128,7 +132,7 @@ export const uploadFile = (props: {
   callback?: (path: string) => void
 }) => {
   uni.uploadFile({
-    url: `${process.env.HOST}/iou/upload`,
+    url: uploadUrl,
     filePath: props.path,
     name: 'file',
     formData: props.formData,
@@ -163,3 +167,4 @@ export const hideCode = (str: string, frontLen: number, endLen: number) => {
   }
   return str.substring(0, frontLen) + xing + str.substring(str.length - endLen)
 }
+

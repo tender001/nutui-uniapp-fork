@@ -60,7 +60,7 @@ export default defineUniPages({
   globalStyle: {
     navigationBarBackgroundColor: '@navBgColor',
     navigationBarTextStyle: '@navTxtStyle',
-    navigationBarTitleText: '植保防护',
+    navigationBarTitleText: '青创农服',
     backgroundColor: '@bgColor',
     backgroundTextStyle: '@bgTxtStyle',
     backgroundColorTop: '@bgColorTop',

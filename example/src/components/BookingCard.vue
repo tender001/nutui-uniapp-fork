@@ -4,7 +4,8 @@
     <view class="booking-card-top">
       <!-- typeList -->
       <nut-grid :column-num="4">
-        <nut-grid-item v-for="(item, index) in typeList" :text="item.typeName" :key="index">
+        <nut-grid-item @click="navigateTo(`/pages/release/index?id=${item.id}`)" v-for="(item, index) in typeList"
+          :text="item.typeName" :key="index">
           <image style="width: 32px;" mode="widthFix" :src="item.typeImg" />
         </nut-grid-item>
 
@@ -13,7 +14,7 @@
     <view class="booking-welcome">
       <image class="booking-welcome-icon" mode="widthFix"
         src="https://oss.6780.cn/pilot/%E9%A6%96%E9%A1%B5%E6%B2%9F%E9%80%9A%E6%9D%A1%E5%B7%A6%E4%BE%A7icon%403x.png" />
-      <text>欢迎使用小白菜飞手</text>
+      <text>欢迎使用青创农服</text>
     </view>
     <view class="booking-content">
       <nut-button custom-style="font-weight: bold" type="primary"

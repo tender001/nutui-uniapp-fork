@@ -27,7 +27,8 @@ export const getDetail = (data: { taskId: string }): Promise<Response<TaskItem>>
     return requests.get('/uav/detail', data)
 }
 // 完成任务
-export const postFinishTask = (data: { id: string, userId: string, workPic: string, workRemark: string }): Promise<any> => {
+// { id: string, userId: string, workPic: string, workRemark: string }
+export const postFinishTask = (data: any): Promise<any> => {
     return requests.post('/uav/finishTask', data)
 }
 // 获取任务分类
@@ -64,7 +65,7 @@ export const getUserInfo = (): Promise<any> => {
     return requests.get('/uav/userInfo')
 }
 // 编辑任务信息
-export const postEditTask = (data: { id?: string, state?: number, signPic?: string, commission?: number, remark?: string }): Promise<any> => {
+export const postEditTask = (data: { id?: string | number, state?: number, signPic?: string, commission?: number, remark?: string }): Promise<any> => {
     return requests.post('/uav/editTask', data)
 }
 
