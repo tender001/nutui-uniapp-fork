@@ -21,12 +21,22 @@
           </template>
         </nut-input>
       </nut-form-item>
+      <nut-form-item label="总金额" prop="totalPrice" :rules="[
+      { required: true, message: '请输入总金额' }
+    ]">
+        <nut-input v-model="form.totalPrice" type="number" placeholder="请输入总金额">
+          <template #right>
+            <div>元</div>
+          </template>
+        </nut-input>
+      </nut-form-item>
 
       <!-- <nut-form-item label="是否挂账" prop="isCredit" :rules="[{ required: true, message: '请选择是否挂账' }]">
         <nut-switch v-model="form.isCredit"></nut-switch>
       </nut-form-item> -->
       <nut-form-item label="上传照片" prop="workPic" :rules="[{ required: true, message: '请上传照片' }]">
-        <nut-uploader v-model:file-list="form.workPic" :url="uploadUrl" accept="image/*" maximum="3" multiple>
+        <nut-uploader @success="(row) => handleUploader(row, 'workPic')" v-model:file-list="form.workPic"
+          :url="uploadUrl" accept="image" maximum="3" multiple>
         </nut-uploader>
       </nut-form-item>
       <nut-form-item label="备注" prop="workRemark">
@@ -47,8 +57,8 @@ import { ref, reactive, onMounted, computed } from 'vue'
 import { useAppStore } from '@/store'
 import { useInit } from '@packages/hooks'
 import { postFinishTask, getDetail } from '../../api/uav'
-import { redirectBack, showToast, uploadUrl } from '@/utils/index'
-import { FormInst } from 'nutui-uniapp/components/form/types'
+import { redirectTo, showToast, uploadUrl, } from '@/utils/index'
+import type { FormInst } from 'nutui-uniapp'
 
 const appStore = useAppStore()
 
@@ -64,6 +74,7 @@ const form = reactive<Record<string, any>>({
   isCredit: undefined,
   /** 作业照片 */
   workPic: undefined,
+  totalPrice: undefined,
   /** 作业描述 */
   workRemark: undefined,
   /** 单据照片 */
@@ -93,9 +104,11 @@ const fetchData = async () => {
   const res = await getDetail({ taskId: taskId.value })
   if (res?.code === 0) {
 
-    form.taskCategory = res.data.taskCategory
+    form.taskCategory = [res.data.taskCategory]
     form.acreNum = res.data.acreNum
     form.taskCategoryRow = categoryList.value.find(item => item.value === res.data.taskCategory)
+    form.totalPrice = res.data.totalPrice
+
   }
 }
 onMounted(() => {
@@ -116,22 +129,33 @@ const handleTaskCategoryChange = ({ selectedValue, selectedOptions }: any) => {
 const onBlurValidate = (prop: string) => {
   formRef.value?.validate(prop)
 }
+const handleUploader = ({ data, fileItem }, fieldKey) => {
+  const ossData = JSON.parse(data.data)
+  setTimeout(() => {
+    form[fieldKey] = form[fieldKey].map(item => {
+      if (item.uid === fileItem.uid) {
+        item.ossUrl = ossData.data
+      }
+      return item
+    })
+  }, 100);
+}
 
 const onSubmit = async (values: Record<string, any>) => {
   formRef.value?.validate().then(async ({ valid, errors }: any) => {
     if (!valid) return
-    debugger
     const res = await postFinishTask({
       ...form,
       id: getLocationParams('id'),
-      workPic: form.workPic?.map(item => item.path).join(','),
+      workPic: form.workPic?.map(item => item.ossUrl).join(','),
       taskCategory: form.taskCategory[0],
       taskCategoryRow: undefined,
     })
     if (res?.code === 0) {
       formRef.value?.reset()
       showToast('提交成功')
-      redirectBack()
+      redirectTo(`/pages/details/index?id=${taskId.value}`)
+      // redirectBack()
     }
 
   })

@@ -1,7 +1,7 @@
 <template>
   <view class="order-page">
     <nut-searchbar v-model="search.keyword" custom-class="search" shape="round"
-      placeholder="请输入订单名称/编号"></nut-searchbar>
+      placeholder="请输入订单名称/ID"></nut-searchbar>
     <nut-tabs v-model="userType" type="smile" size="large" @change="handleTabsChange">
       <nut-tab-pane title="我的发单" pane-key="0">
         <List @change="fetchOrders" :data="myCreateOrders" :userType="userType" v-if="myCreateOrders.length" />
@@ -34,7 +34,7 @@ const categoryList = computed(() => {
     }
   })
 })
-const userType = ref('0')
+const userType = ref<'0' | '1'>('0')
 const myCreateOrders = ref([] as any)
 const myOfferOrders = ref([] as any)
 
@@ -42,8 +42,7 @@ const data = Array.from({ length: 20 })
 const search = reactive<Record<string, any>>({
   keyword: ''
 })
-onMounted(() => {
-  uni.showShareMenu({ withShareTicket: true })
+onShow(async () => {
   fetchOrders()
 })
 const handleTabsChange = () => {
@@ -61,6 +60,7 @@ const fetchOrders = () => {
           ...item,
           stateName: orderStateList.find((it: any) => it.value === item.state)?.text || '-',
           taskCategoryName: categoryList.value.find((it: any) => it.value === item.taskCategory)?.text || '-',
+          address: item.address?.length! > 18 ? `${item.address?.substring(0, 18)}..` : item.address
 
         }
       })

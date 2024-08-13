@@ -34,7 +34,7 @@ export function useInit() {
     const pages = getCurrentPages()
     // 获取路由参数
     const curPage = pages[pages.length - 1] as any
-    return name ? curPage.options[name] : curPage.options
+    return (name && curPage.options) ? curPage.options[name] : curPage.options
   }
 
   return {

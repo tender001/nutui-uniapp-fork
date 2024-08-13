@@ -9,6 +9,7 @@ export default defineManifestConfig({
   'transformPx': false,
   'mp-weixin': {
     appid: 'wx1db789abdecc9a60',
+    requiredPrivateInfos: ['chooseLocation'],
     setting: {
       urlCheck: false,
       es6: true,

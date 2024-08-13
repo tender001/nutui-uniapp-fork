@@ -89,7 +89,7 @@ export const openCustomerServiceChat = async () => {
 export const showToast = (
   title: string,
   icon?: 'success' | 'error' | 'loading' | 'none' | undefined,
-  duration?: number
+  duration?: number,
 ) => {
   uni.showToast({
     title,

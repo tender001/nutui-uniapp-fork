@@ -29,3 +29,14 @@ export const orderStateList = [{
     text: '已取消',
     value: 4
 }]
+
+export const orderMaps = [{
+    text: '普通单',
+    value: '1', describe: '普通单服务费', price: 0
+}, {
+    text: '加急单',
+    value: '2', describe: '加急单服务费（含任务推送给30个飞手）', price: 100
+}, {
+    text: '置顶单',
+    value: '3', describe: '置顶单服务费（含任务推送给100个飞手）', price: 300
+}]

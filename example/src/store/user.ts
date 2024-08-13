@@ -1,7 +1,7 @@
 // import { defineStore } from 'pinia'
 import { getPermissions } from '@/api'
 import { postLogin, getUserInfo } from '@/api/uav'
-import { setToken } from '@/packages/utils'
+import { setToken, removeToken } from '@/packages/utils'
 
 interface UserInfoProps {
   realName?: string
@@ -49,6 +49,7 @@ export const useUserStore = defineStore('user', () => {
   const cleanup = () => {
     userinfo.value = defaultUser
     permissions.value = []
+    removeToken()
   }
   const login = async (userInfo: any) => {
     const { code } = await uni.login()

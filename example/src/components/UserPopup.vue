@@ -24,7 +24,6 @@
 </template>
 <script setup lang="ts">
 import { useUserStore } from '@/store/user'
-import { ref } from 'vue'
 import { postBindLocalPhoneNumber } from '../api/uav'
 import { showToast } from '../utils'
 import regMap from '../utils/regMap'

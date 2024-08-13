@@ -7,7 +7,7 @@ const errorHandler = (msg: string) => {
   removeToken()
   userStore.cleanup()
   uni.hideToast()
-  uni.showToast({ title: msg })
+  uni.showToast({ title: msg, icon: 'none' })
   setTimeout(() => {
     uni.navigateTo({ url: 'pages/login/index' })
   }, 50)

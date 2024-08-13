@@ -49,7 +49,7 @@ export const getPayNotify = (): Promise<any> => {
     return requests.get('/uav/payNotify')
 }
 // 接单
-export const getReceivingTask = (params: { taskId: string }): Promise<any> => {
+export const getReceivingTask = (params: { taskId: string | number }): Promise<any> => {
     return requests.get('/uav/receivingTask', params)
 }
 // 任务大厅 type 排序类型 0-附近 1-最新 2.高佣

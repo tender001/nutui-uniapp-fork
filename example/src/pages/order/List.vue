@@ -3,20 +3,26 @@
     <view v-for="(item, index) in  data  " :key="index" class="order-list-item" @click="() => handleGoDetails(item)">
 
       <view class="list-item-row list-item-top flex justify-between">
-        <view class="list-item-left">单号：{{ item.taskNo }}</view>
-        <view class="list-item-right">{{ item.stateName }}</view>
+        <view class="list-item-left">ID {{ item.taskNo }}</view>
+        <view :class="`list-item-right state-${item.state}`">{{ item.stateName }}</view>
       </view>
       <view class="list-item-row list-item-content flex justify-between">
         <view class="list-item-left">
           <view class="flex  " style="align-items: center;">
             <image style="width: 30px;height: 30px;" src="https://oss.6780.cn/pilot/zhibaofanghu.png" />
-            <text>{{ item.taskCategoryName }}</text>
+            <text class="title">{{ item.taskCategoryName }}</text>
           </view>
-          <nut-price :price="item.totalPrice" size="normal" />
+
+          <!-- <nut-price :price="item.totalPrice" size="normal" /> -->
         </view>
         <view class="list-item-right">
-          <view>￥{{ item.totalPrice }}</view>
+          <!-- <view>￥{{ item.totalPrice }}</view> -->
+          <nut-price :price="item.totalPrice" size="normal" :decimal-digits="0" />
         </view>
+      </view>
+      <view class="cell-footer-title">
+        <view class="cell-footer-title-text"><text class="value">{{ item.acreNum }}亩</text></view>
+        <view class="cell-footer-title-text">{{ item.address }}</view>
       </view>
       <view class="list-item-row list-item-bottom flex justify-between">
         <view class="list-item-left" v-if="userType === '1'">{{ dayjs(item.receivingTime).format('YYYY-MM-DD HH:mm') }}
@@ -113,16 +119,69 @@ const handlePayContinue = async (row: any) => {
       padding: 8px 0;
       color: $text-color;
       font-size: $font-size-s;
+      align-items: center;
 
       .list-item-left {
+
         // font-size: $font-size-xs;
         @include textsm()
+      }
+
+      .title {
+        @include flex-center(center);
+        @include title();
+        justify-content: start;
+        font-size: 18px;
+      }
+
+
+
+    }
+
+    .cell-footer-title {
+      display: flex;
+      align-items: center;
+      margin-top: -8px;
+      font-size: 14px;
+      color: $text-color;
+
+      .cell-footer-title-text {
+        padding-right: 16px;
+
+        .value {
+          color: $primary-color;
+        }
       }
     }
 
     .list-item-top {
       .list-item-right {
         color: $primary-color;
+      }
+
+      // -1.待发布(线上待支付) 0.待接单 1.已接单 2.进行中 3.已完成 4.已取消
+      .state-0 {
+        color: #FF9E0D;
+      }
+
+      .state--1 {
+        color: $primary-color;
+      }
+
+      .state-1 {
+        color: $primary-color;
+      }
+
+      .state-2 {
+        color: #4965f2;
+      }
+
+      .state-3 {
+        color: $primary-color;
+      }
+
+      .state-4 {
+        color: $text-color-3;
       }
     }
 

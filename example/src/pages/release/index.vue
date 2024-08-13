@@ -5,38 +5,35 @@ import dayjs from 'dayjs'
 import { postCreateTask } from '@/api/uav'
 import { useUserStore } from '@/store/user'
 import { redirectTo, showToast } from '../../utils'
+import { orderMaps } from '@/utils/constant'
 import { useAppStore } from '@/store'
-import { FormInst } from 'nutui-uniapp/components/form/types'
+import type { FormInst } from 'nutui-uniapp'
+import { getToken } from '@/packages/utils'
 
 const appStore = useAppStore()
 // appStore.setEnums()
 
-const ruleForm = ref<FormInst>(null)
+const ruleForm = ref<FormInst>()
 const formData = reactive<any>({
-  expectServiceTime: dayjs().format('YYYY-MM-DD'),//[date2Str(new Date())],
+  expectServiceTime: dayjs().format('YYYY-MM-DD'),
   taskCategory: [],
   taskCategoryRow: {},
   name: '',
   orderType: '1',
-  acreNum: 100,
-  remark: '高空化肥喷洒',
-  address: '白菜村菊花小园',
+  acreNum: undefined,
+  remark: '',
+  price: '',
+  concatPhone: '',
+  address: '',
   /** 余额抵扣 */
   deduction: false,
   /** 协议 */
   agreement: false,
 })
 const hasFail = ref(false)
-const orderMaps = [{
-  label: '普通单',
-  value: '1', describe: '普通单服务费', price: 0
-}, {
-  label: '加急单',
-  value: '2', describe: '加急单服务费（含任务推送给30个飞手）', price: 100
-}, {
-  label: '置顶单',
-  value: '3', describe: '置顶单服务费（含任务推送给100个飞手）', price: 300
-}]
+const userPopup = ref(false)
+const addressInfo = ref<any>({})
+
 const userStore = useUserStore()
 const userinfo = computed(() => userStore.userinfo)
 const categoryList = computed(() => {
@@ -53,7 +50,7 @@ const selectTypeData = computed(() => {
   return row || orderMaps[0]
 })
 const payTotal = computed(() => {
-  return (selectTypeData.value.price || 0) + (Number(formData.acreNum || 0) * (formData.taskCategoryRow?.price || 0))
+  return (selectTypeData.value.price || 0) + (Number(formData.acreNum || 0) * (formData.taskCategoryRow?.price || formData.price))
 })
 const switchVisible = reactive<Record<string, boolean>>({
   expectServiceTime: false,
@@ -76,6 +73,7 @@ const handleSelectDate = (param: any) => {
 const handleTaskCategoryChange = ({ selectedValue, selectedOptions }: any) => {
   formData.taskCategory = selectedValue
   formData.taskCategoryRow = selectedOptions[0]
+  formData.price = selectedOptions[0]?.price || ''
   changeSwitch('taskCategory', false)
 }
 const submitParams = computed<any>(() => {
@@ -87,13 +85,12 @@ const submitParams = computed<any>(() => {
     price: formData.taskCategoryRow.price,
     totalPrice: payTotal.value,
     "concatName": userinfo.value.nickName,
-    "concatPhone": userinfo.value.phone,
-    "latitude": 0,
-    "longitude": 0,
+    concatPhone: formData.concatPhone || userinfo.value.phone,
     remark: formData.remark,
     extData: JSON.stringify({
       remark: formData.remark,
       money: payTotal.value,
+      addressInfo: addressInfo.value
     }),
   }
 })
@@ -116,12 +113,29 @@ const handleSubmit = () => {
 
   })
 }
-onMounted(() => {
+onShareAppMessage(() => {
+  return {
+  }
+})
+
+onMounted(async () => {
+  uni.showShareMenu({ withShareTicket: true })
+  // await userStore.setUserinfo()
+  if (getToken()) {
+    await userStore.setUserinfo()
+    if (userinfo.value.userId && !userinfo.value.phone) {
+      userPopup.value = true
+    }
+    formData.concatPhone = userinfo.value.phone || ''
+  }
+
+
   setTimeout(() => {
     const taskCategoryRow = categoryList.value[0]
-    formData.taskCategoryRow = taskCategoryRow
-    formData.taskCategory = [taskCategoryRow.value]
-  }, 1000);
+    // formData.taskCategoryRow = taskCategoryRow
+    // formData.taskCategory = [taskCategoryRow.id]
+    handleTaskCategoryChange({ selectedValue: [taskCategoryRow.id], selectedOptions: [taskCategoryRow] })
+  }, 600);
 })
 watch(() => formData, (val) => {
   console.log('formData----', val)
@@ -129,11 +143,32 @@ watch(() => formData, (val) => {
     ruleForm.value?.validate()
   }
 }, { immediate: true, deep: true })
+
+const handleChooseAddress = () => {
+  uni.chooseLocation({
+    success: (res) => {
+      console.log('res--success', res)
+      formData.address = res.name
+      formData.latitude = res.latitude
+      formData.longitude = res.longitude
+      addressInfo.value = res
+    },
+    fail: (res) => {
+      console.log('res--fail', res)
+
+    }
+  })
+}
 const handlePay = async (payType: number) => {
-  const { data } = await postCreateTask({
+  const { data, code } = await postCreateTask({
     ...submitParams.value,
     payType
   })
+  // 未绑定手机号
+  if (code === 101) {
+    userPopup.value = true
+    return
+  }
   if (payType === 1) {
     uni.requestPayment({
       ...data,
@@ -141,6 +176,7 @@ const handlePay = async (payType: number) => {
       success: (res: any) => {
         console.log('success--', res)
         showToast('发布成功')
+        handleReset()
         redirectTo('/pages/details/index?id=' + data.id)
       },
       fail: (res: any) => {
@@ -150,9 +186,14 @@ const handlePay = async (payType: number) => {
 
   } else {
     showToast('发布成功')
+    handleReset()
     redirectTo('/pages/details/index?id=' + data)
   }
 
+}
+const handleReset = () => {
+  switchVisible.pay = false
+  ruleForm.value?.reset()
 }
 
 
@@ -164,11 +205,17 @@ const handlePay = async (payType: number) => {
       taskCategory: [
         { required: true, message: '请选择任务类型' },
       ],
+      price: [
+        { required: true, message: '请填写单价' },
+      ],
       expectServiceTime: [
         { required: true, message: '请选择日期' },
       ],
       address: [
-        { required: true, message: '请填写地址' },
+        { required: true, message: '请选择地址' },
+      ],
+      concatPhone: [
+        { required: true, message: '请填写联系电话' },
       ],
       // money: [
       //   { required: true, message: '请填写佣金' },
@@ -194,6 +241,12 @@ const handlePay = async (payType: number) => {
             @confirm="handleTaskCategoryChange" @cancel="changeSwitch('taskCategory', false)" />
         </nut-popup>
       </nut-form-item>
+      <nut-form-item label="单价" prop="price" :show-error-message="false">
+        <nut-input v-model="formData.price" class="nut-input-text" placeholder="请填写单价" type="number"
+          input-align="right"><template #right>
+            <div>元</div>
+          </template></nut-input>
+      </nut-form-item>
       <nut-form-item label="日期" prop="expectServiceTime" :show-error-message="false">
         <nut-cell :desc="formData.expectServiceTime ? formData.expectServiceTime : '请选择'"
           @click="changeSwitch('expectServiceTime', true)" is-link />
@@ -201,11 +254,18 @@ const handlePay = async (payType: number) => {
           :start-date="dayjs().format('YYYY-MM-DD')" safe-area-inset-bottom
           @close="changeSwitch('expectServiceTime', false)" @choose="handleChooseDate" @select="handleSelectDate" />
       </nut-form-item>
+      <nut-form-item label="联系电话" prop="concatPhone">
 
-      <nut-form-item label="详细地址" prop="address">
-        <nut-input v-model="formData.address" class="nut-input-text" placeholder="请填写详细地址"
+        <nut-input v-model="formData.concatPhone" class="nut-input-text" placeholder="请填写联系电话" type="tel"
           input-align="right"></nut-input>
+
       </nut-form-item>
+      <nut-form-item label="详细地址" prop="address">
+
+        <nut-cell :desc="formData.address ? formData.address : '请选择'" @click="handleChooseAddress" is-link />
+
+      </nut-form-item>
+
       <!-- </nut-cell-group> -->
 
       <nut-form-item label="面积" prop="acreNum">
@@ -231,7 +291,7 @@ const handlePay = async (payType: number) => {
           <nut-radio-group v-model="formData.orderType" direction="horizontal">
 
             <nut-radio :label="item.value" shape="button" v-for="(item, index) in orderMaps" :key="index">
-              <div class="radio-text">{{ item.label }}</div><nut-price :price="item.price" :decimal-digits="0"
+              <div class="radio-text">{{ item.text }}</div><nut-price :price="item.price" :decimal-digits="0"
                 size="normal" />
             </nut-radio>
 
@@ -350,7 +410,7 @@ const handlePay = async (payType: number) => {
     </nut-form>
     <PayPopup :visible="switchVisible.pay" @ok="handlePay" :money="payTotal" @close="switchVisible.pay = false" />
 
-
+    <UserPopup :visible="userPopup" @close="userPopup = false" />
 
   </div>
 </template>

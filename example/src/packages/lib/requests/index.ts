@@ -87,7 +87,7 @@ export function useRequests(requestsConfig: RequestsConfig = {}) {
         error.message = httpMsg[error.response.status] || httpMsg.errorMsg
       if (error.message) {
         uni.hideToast()
-        uni.showToast({ title: error.message })
+        uni.showToast({ title: error.message || '请求异常', icon: 'none' })
       }
       return Promise.reject(error)
     },

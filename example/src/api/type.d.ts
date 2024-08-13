@@ -68,6 +68,7 @@ export interface TaskItem {
   orderType: number;
   /** 价格(单位：分)，可选 */
   price?: number;
+  commission?: number;
   /** 接单时间，可选 */
   receivingTime?: string;
   /** 创建时间 */

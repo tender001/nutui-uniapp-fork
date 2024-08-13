@@ -20,7 +20,7 @@
         <template #icon>
 
         </template>
-        <view class="cell-body-title">
+        <view class="cell-body-title" @click="handleSelectedRow(item)">
           <view class="cell-body-title-text">
             <nut-icon v-if="item.orderType > 1" name="https://oss.6780.cn/pilot/hot.png" size="24px"></nut-icon>
             <text> {{ item.remark || '我是一定需求描述备注' }}</text>
@@ -38,7 +38,7 @@
           </view>
         </template>
         <template #desc>
-          <nut-button plain size="small" type="primary" @click="() => handleTakeOrder(item, index)">确认接单</nut-button>
+          <nut-button plain size="small" type="primary" @click="handleOpen(item)">确认接单</nut-button>
         </template>
 
       </nut-cell>
@@ -46,22 +46,22 @@
 
 
     </nut-cell-group>
+    <nut-dialog content="请确认是否要接单" v-model:visible="receiving" @cancel="receiving = false"
+      @ok="handleTakeOrder(selectRow!)" />
   </view>
 </template>
 
 <script setup lang="ts">
 import { useAppStore } from '@/store'
 import { showDay } from '@/utils/date'
-import { useUserStore } from '@/store/user'
 import { getReceivingTask } from '../../api/uav'
 import { redirectTo, showToast } from '../../utils'
 import type { TaskItem } from '../../api/type'
 
 const appStore = useAppStore()
-const userStore = useUserStore()
 
-const userinfo = computed(() => userStore.userinfo)
-
+const receiving = ref(false)
+const selectRow = ref<TaskItem>()
 interface Props {
   data: TaskItem[],
   tab: string
@@ -69,17 +69,20 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   tab: ''
 })
-onShow(async () => {
 
+const handleOpen = (row: TaskItem) => {
+  selectRow.value = row
+  receiving.value = true
+}
 
-})
-
-const handleTakeOrder = async (row: any, index: number) => {
-  const res = await getReceivingTask({ taskId: row.id })
+const handleTakeOrder = async (row: TaskItem) => {
+  const res = await getReceivingTask({ taskId: row.id! })
   const { code } = res
   if (code === 0) {
     showToast('接单成功')
-    redirectTo(`/pages/details/index?id=${row.id}`)
+    setTimeout(() => {
+      redirectTo(`/pages/details/index?id=${row.id}`)
+    }, 1000);
 
   }
   if (code === 100) {
@@ -87,6 +90,9 @@ const handleTakeOrder = async (row: any, index: number) => {
     return
   }
 
+}
+const handleSelectedRow = (row: TaskItem) => {
+  redirectTo(`/pages/details/index?id=${row.id}&from=bookingHall`)
 }
 </script>
 

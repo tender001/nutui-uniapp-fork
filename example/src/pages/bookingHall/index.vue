@@ -36,8 +36,7 @@ const list = ref<any[]>([])
 
 onShareAppMessage(() => {
     return {
-        title: '分享的标题',
-        desc: 'unibest 演示示例',
+        title: '需求大厅',
         // path: '/pages/index/index',
         imageUrl: '' // 分享卡片的图片，可选
     }
@@ -55,8 +54,9 @@ const getList = async () => {
         list.value = res.data?.list.map(item => {
             return {
                 ...item,
-                state: item.state === 0 ? '待接单' : item.state === 1 ? '待取货' : item.state === 2 ? '待交付' : '已完成',
+
                 money: item.price! * item.acreNum!,
+                address: item.address?.length! > 11 ? `${item.address?.substring(0, 11)}..` : item.address
             }
         })
     }

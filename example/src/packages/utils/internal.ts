@@ -5,12 +5,12 @@ export const TokenKey = `${storageKeyPrefix}Token`
 
 export const setToken = (token: string) => uni.setStorageSync(TokenKey, token) // { expires: 1 }
 export const getToken = () => uni.getStorageSync(TokenKey)
-export const removeToken = () => {
+export function removeToken() {
   uni.removeStorageSync(TokenKey)
 }
 
 // logout
-export const logoutCleanup = () => {
+export function logoutCleanup() {
   const userStore = useUserStore()
   removeToken()
   uni.navigateTo({ url: '/pages/login/index' })
