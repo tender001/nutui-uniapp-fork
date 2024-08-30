@@ -50,7 +50,7 @@ const selectTypeData = computed(() => {
   return row || orderMaps[0]
 })
 const payTotal = computed(() => {
-  return (selectTypeData.value.price || 0) + (Number(formData.acreNum || 0) * (formData.taskCategoryRow?.price || formData.price))
+  return (selectTypeData.value.price || 0) + (Number(formData.acreNum || 0) * formData.price)
 })
 const switchVisible = reactive<Record<string, boolean>>({
   expectServiceTime: false,
@@ -242,7 +242,7 @@ const handleReset = () => {
         </nut-popup>
       </nut-form-item>
       <nut-form-item label="单价" prop="price" :show-error-message="false">
-        <nut-input v-model="formData.price" class="nut-input-text" placeholder="请填写单价" type="number"
+        <nut-input v-model="formData.price" class="nut-input-text" placeholder="请填写单价" type="digit"
           input-align="right"><template #right>
             <div>元</div>
           </template></nut-input>
@@ -269,7 +269,7 @@ const handleReset = () => {
       <!-- </nut-cell-group> -->
 
       <nut-form-item label="面积" prop="acreNum">
-        <nut-input v-model="formData.acreNum" class="nut-input-text" placeholder="请填写面积" type="number"
+        <nut-input v-model="formData.acreNum" class="nut-input-text" placeholder="请填写面积" type="digit"
           input-align="right"><template #right>
             <div>亩</div>
           </template></nut-input>
@@ -319,7 +319,7 @@ const handleReset = () => {
               <template #title>
                 <div>费用合计</div>
               </template>
-              <template #desc><nut-price :price="payTotal" :decimal-digits="0" size="large" /></template>
+              <template #desc><nut-price :price="payTotal" size="large" /></template>
             </nut-cell>
           </div>
 
@@ -335,7 +335,7 @@ const handleReset = () => {
               <template #title>
                 <div>{{ selectTypeData?.describe }}</div>
               </template>
-              <template #desc><nut-price :price="selectTypeData?.price" :decimal-digits="0" size="small" /></template>
+              <template #desc><nut-price :price="selectTypeData?.price" size="small" /></template>
             </nut-cell>
 
           </div>
@@ -355,8 +355,7 @@ const handleReset = () => {
               </template>
               <template #desc>
                 <div class="pay-total">
-                  <div class="deduction">已抵扣￥0，剩余支付</div> <nut-price :price="payTotal" :decimal-digits="0"
-                    size="large" />
+                  <div class="deduction">已抵扣￥0，剩余支付</div> <nut-price :price="payTotal" size="large" />
                 </div>
               </template>
             </nut-cell>
