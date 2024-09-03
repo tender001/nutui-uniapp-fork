@@ -11,13 +11,65 @@ page,
 #app {
   width: 100%;
   height: 100%;
-
+  .nut-theme-{
+    background-color: #edf3f6;
+   }
   .nut-theme-dark{
    .demo{
      background: black !important;
     }
   }
+  .nut-button--large{
+    font-weight: bold;
+  }
+  .footer-fixed-warp {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    width: 100%;
+    padding: 0 16px;
+    box-sizing: border-box;
+    padding-bottom: constant(safe-area-inset-bottom);
+    padding-bottom: env(safe-area-inset-bottom);
+    margin-bottom: 2px;
+    .footer-lr {
+      width: 100%;
+    }
+    .btn-list {
+      display: flex;
+      justify-content: flex-end;
+      .nut-button {
+        flex: 1;
+      }
+      .nut-button:nth-child(odd) {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+      .nut-button:nth-child(even) {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+    }
+  }
+  // .nut-button--primary
+  .nut-button--plain.nut-button--primary {
+    color: $primary-color !important;
+    background: rgb(62 206 76 / 5%);
+    border-color: rgb(62 206 76 / 50%) !important;
+    height: 32px;
+    border-radius: 8px;
+    font-weight: bold;
+  }
+  :deep(.nut-button--plain){
+    color: $primary-color !important;
+  }
 
+  :deep(.nut-popup){
+    .nut-icon-close {
+      color:#000 !important;
+    }
+  }
   .demo {
     height: auto;
     padding: 0 17px 17px;
@@ -71,3 +123,18 @@ page,
 }
 /* #endif */
 
+.nut-button--primary {
+  color:#000 !important;
+}
+.service-btn {
+  background: transparent;
+  font-size: unset;
+  padding: unset;
+  color: unset;
+  display: unset;
+  text-align: unset;
+  margin: unset;
+}
+.service-btn:after {
+  display: none;
+}

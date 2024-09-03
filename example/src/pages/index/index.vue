@@ -99,7 +99,7 @@ export default {
 
 <route lang="json">
 {
-  "type":"home"
+  "type":"page"
 }
 </route>
 

@@ -4,7 +4,10 @@
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ],
+      "@packages/*": ["./src/packages/*"]
     },
     "types": [
       "@dcloudio/types",

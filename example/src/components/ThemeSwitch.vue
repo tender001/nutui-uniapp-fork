@@ -3,7 +3,7 @@ import { useAppStore } from '@/store'
 
 const { darkMode } = storeToRefs(useAppStore())
 function switchTheme() {
-  darkMode.value = !darkMode.value
+  darkMode.value = false//!darkMode.value
   uni.setNavigationBarColor({
     backgroundColor: darkMode.value ? '#191919' : '#ffffff',
     frontColor: darkMode.value ? '#ffffff' : '#000000',

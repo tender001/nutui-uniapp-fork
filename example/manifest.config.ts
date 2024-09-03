@@ -1,13 +1,14 @@
 import { defineManifestConfig } from '@uni-helper/vite-plugin-uni-manifest'
 
 export default defineManifestConfig({
-  'name': 'NutUi',
+  'name': '青创农服',
   'appid': '__UNI__D989E4B',
   'description': '',
   'versionName': '1.0.0',
   'versionCode': '100',
   'mp-weixin': {
-    appid: 'wxd4e6c25454525507',
+    appid: 'wx1db789abdecc9a60',
+    requiredPrivateInfos: ['chooseLocation'],
     setting: {
       urlCheck: false,
       es6: true,
@@ -22,7 +23,7 @@ export default defineManifestConfig({
     // mergeVirtualHostAttributes: true,
   },
   'mp-alipay': {
-    appid: 'wxd4e6c25454525507',
+    appid: 'wx1db789abdecc9a60',
     setting: {
       urlCheck: false,
       es6: true,

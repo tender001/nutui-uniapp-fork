@@ -1,3 +1,5 @@
+import dayjs from "dayjs"
+
 /**
  * 时间戳转换 或 获取当前时间的时间戳
  * @param timeStr
@@ -166,4 +168,19 @@ export function formatResultDate(date: string) {
   days[3] = `${days[0]}-${days[1]}-${days[2]}`
   days[4] = getWhatDay(+days[0], +days[1], +days[2])
   return days
+}
+
+export function showDay(date: any) {
+  const diff = dayjs(date).diff(dayjs(), 'day')
+  if (diff > 0) {
+    const dayString = ['明天', '后天']
+    if (diff < 3) {
+      return dayString[diff - 1]
+    } else {
+      // return `${diff}天后（${dayjs(date).format('MM-YY')}）`
+      return dayjs(date).format('MM月YY')
+    }
+  } else {
+    return '今天'
+  }
 }
