@@ -111,7 +111,7 @@ onShow(() => {
 
         .nut-tab-pane {
             padding: 0;
-            background: #edf3f6;
+            background: #ffffff;
             height: 100%;
             overflow: auto;
 

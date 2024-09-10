@@ -10,7 +10,7 @@ export default withPwa(defineConfig({
   description: '京东风格的移动端组件库，完全适配uni-app',
   lastUpdated: true,
   head: [
-    ['meta', { property: 'og:title', content: '青创农服' }],
+    ['meta', { property: 'og:title', content: '遇见语录' }],
     [
       'meta',
       {

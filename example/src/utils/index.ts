@@ -7,22 +7,17 @@ import pages from '../pages.json'
  * @param params
  * @param mode
  */
-// eslint-disable-next-line complexity
-export const redirectTo = (
-  path: string,
-  params: Object = {},
-  mode: 'tabbar' | 'redirectTo' | 'reLaunch' | 'navigateTo' = 'navigateTo'
-) => {
-  // eslint-disable-next-line prefer-const
+
+export function redirectTo(path: string, params: object = {}, mode: 'tabbar' | 'redirectTo' | 'reLaunch' | 'navigateTo' = 'navigateTo') {
   let { url, query } = queryString.parseUrl(path)
 
   // 拼接参数
-  url +=
-    '?' +
-    queryString.stringify({
-      ...query,
-      ...params,
-    })
+  url
+    += `?${
+      queryString.stringify({
+        ...query,
+        ...params,
+      })}`
   // 导航页
   const tabBarUrl = pages.tabBar?.list.map(item => `/${item.pagePath}`)
 
@@ -64,21 +59,21 @@ export const redirectTo = (
       break
   }
 }
-export const redirectBack = () => {
+export function redirectBack() {
   const length = getCurrentPages().length
   if (length > 1) {
     uni.navigateBack({
       delta: 1,
     })
-  } else {
+  }
+  else {
     redirectTo('/pages/home/index')
   }
 }
 /**
  * 联系客服
  */
-export const openCustomerServiceChat = async () => {
-
+export async function openCustomerServiceChat() {
   const path = `${process.env.CHAT}/#?role=1688899480538`
   uni.navigateTo({ url: `/pages/minor/web-view/index?path=${encodeURIComponent(path)}` })
 }
@@ -86,11 +81,7 @@ export const openCustomerServiceChat = async () => {
  * 消息提示
  * @param title
  */
-export const showToast = (
-  title: string,
-  icon?: 'success' | 'error' | 'loading' | 'none' | undefined,
-  duration?: number,
-) => {
+export function showToast(title: string, icon?: 'success' | 'error' | 'loading' | 'none' | undefined, duration?: number) {
   uni.showToast({
     title,
     icon: icon || 'none',
@@ -98,14 +89,15 @@ export const showToast = (
   })
 }
 
-export const clearStorage = () => {
+export function clearStorage() {
   try {
     uni.clearStorageSync()
-  } catch (e) {
+  }
+  catch (e) {
     // Do something when catch error
   }
 }
-export const getUserProfile = (cb?: () => void) => {
+export function getUserProfile(cb?: () => void) {
   uni.getUserProfile({
     desc: '用于完善欠条信息,提供有利保障', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
     success: async (res) => {
@@ -126,11 +118,11 @@ export const uploadUrl = 'https://qt.59pa.com/prod-api/uav/upload'
  * 上传文件
  * @param title
  */
-export const uploadFile = (props: {
+export function uploadFile(props: {
   path: string
   formData?: any
   callback?: (path: string) => void
-}) => {
+}) {
   uni.uploadFile({
     url: uploadUrl,
     filePath: props.path,
@@ -158,7 +150,7 @@ export const uploadFile = (props: {
  * @param endLen 字符串后面保留位数
  * @returns {string}
  */
-export const hideCode = (str: string, frontLen: number, endLen: number) => {
+export function hideCode(str: string, frontLen: number, endLen: number) {
   str = str || ''
   const len = str.length - frontLen - endLen
   let xing = ''
@@ -167,4 +159,3 @@ export const hideCode = (str: string, frontLen: number, endLen: number) => {
   }
   return str.substring(0, frontLen) + xing + str.substring(str.length - endLen)
 }
-

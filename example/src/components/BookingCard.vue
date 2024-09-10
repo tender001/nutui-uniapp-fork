@@ -14,7 +14,7 @@
     <view class="booking-welcome">
       <image class="booking-welcome-icon" mode="widthFix"
         src="https://oss.6780.cn/pilot/%E9%A6%96%E9%A1%B5%E6%B2%9F%E9%80%9A%E6%9D%A1%E5%B7%A6%E4%BE%A7icon%403x.png" />
-      <text>欢迎使用青创农服</text>
+      <text>欢迎使用遇见语录</text>
     </view>
     <view class="booking-content">
       <nut-button custom-style="font-weight: bold" type="primary"

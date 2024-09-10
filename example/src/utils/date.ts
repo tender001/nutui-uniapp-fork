@@ -1,4 +1,4 @@
-import dayjs from "dayjs"
+import dayjs from 'dayjs'
 
 /**
  * 时间戳转换 或 获取当前时间的时间戳
@@ -176,11 +176,13 @@ export function showDay(date: any) {
     const dayString = ['明天', '后天']
     if (diff < 3) {
       return dayString[diff - 1]
-    } else {
+    }
+    else {
       // return `${diff}天后（${dayjs(date).format('MM-YY')}）`
       return dayjs(date).format('MM月YY')
     }
-  } else {
+  }
+  else {
     return '今天'
   }
 }

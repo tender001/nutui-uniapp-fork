@@ -2,13 +2,13 @@
 // @import './mixins';
 
 :root, page {
-  --nut-primary-color: #3ece4c;
-  --nut-primary-color-end: #48e96d;
+  --nut-primary-color: #8b7773;
+  --nut-primary-color-end: #8b7773;
   --nut-success-color: #26BF26;
   --nut-success-color: #26BF26;
   --nut-danger-color: #FA2C19;
   --nut-warning-color: #FF9E0D;
-  --nut-title-color: #000;
+  --nut-title-color: #323233;
   --nut-title-color2: #666666;
   --nut-text-color: #808080;
   --nut-text-color-1: #323233;
@@ -18,13 +18,17 @@
   --nut-active-color: #f2f3f5;
   --nut-help-color: #f5f5f5;
   --nut-disable-color: #cccccc;
-  --nut-required-color: #fa2c19
-  --nut-nav-bg-color: #a7ffa9
+  --nut-required-color: #fa2c19;
+  --nut-nav-bg-color: #a7ffa9;
+  --nut-text-weak-color: #c0c5cf;
+  
 }
 
 // scss vars
-// $primary-color: var(--nut-primary-color);
+$primary-color: #8b7773;
 $primary-color-end: var(--nut-primary-color-end);
+$weak-color: #c0c5cf;
+$primary-color-1: #c5bbb9;
 $success-color: var(--nut-success-color);
 $danger-color: var(--nut-danger-color);
 $warning-color: var(--nut-warning-color);
@@ -44,8 +48,8 @@ $disable-color: var(--nut-disable-color);
 $required-color: var(--nut-required-color);
 $uni-nav-bg-color: #a7ffa9;
 $uni-tab-select-color: #ff966a;
-$button-primary-color:#000;
-$bg-color:#edf3f6;
+$button-primary-color:#666;
+$bg-color:#ffffff;
 $title-font-size:22px;
 $font-size-xl:20px;
 $font-size-l:18px;
@@ -53,9 +57,11 @@ $font-size-m:16px;
 $font-size-s:14px;
 $font-size-xs:12px;
 $font-size-xxs:10px;
+$cell-box-shadow: 0 1px 7px 0 $weak-color;
+
 
 @mixin title() {
-  font-size: $title-size;
+  font-size: $font-size-xl;
   color: $title-color;
   font-weight: bold;
 }
@@ -70,8 +76,12 @@ $font-size-xxs:10px;
   align-items: center;
   justify-content: $content;
 }
+@mixin flex() {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 @mixin title() {
   font-size: $title-size;
-  color: $title-color;
-  font-weight: bold;
+  color: $primary-color;
 }

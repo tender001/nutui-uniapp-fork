@@ -1,6 +1,6 @@
 {
   "dark": {
-    "navBgColor": "#a7ffa9",
+    "navBgColor": "#000",
     "navTxtStyle": "white",
     "bgColor": "#000",
     "bgTxtStyle": "light",
@@ -8,11 +8,11 @@
     "bgColorBottom": "#000"
   },
   "light": {
-    "navBgColor": "#a7ffa9",
+    "navBgColor": "#ffffff",
     "navTxtStyle": "black",
-    "bgColor": "#edf3f6",
+    "bgColor": "#ffffff",
     "bgTxtStyle": "dark",
-    "bgColorTop": "#a7ffa9",
-    "bgColorBottom": "#edf3f6"
+    "bgColorTop": "#ffffff",
+    "bgColorBottom": "#fcfcfc"
   }
 }

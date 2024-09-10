@@ -1,7 +1,7 @@
 import { defineManifestConfig } from '@uni-helper/vite-plugin-uni-manifest'
 
 export default defineManifestConfig({
-  'name': '青创农服',
+  'name': '遇见语录',
   'appid': '__UNI__D989E4B',
   'description': '',
   'versionName': '1.0.0',

@@ -11,8 +11,8 @@ export default defineUniPages({
   // },
   "tabBar": {
     "color": "#666666",
-    "selectedColor": "#3ece4c",
-    "backgroundColor": "#f7f7f7",
+    "selectedColor": "#8b7773",
+    "backgroundColor": "#fcfcfc",
     "height": "50px",
     "fontSize": "10px",
     "iconWidth": "20px",
@@ -58,7 +58,7 @@ export default defineUniPages({
   globalStyle: {
     navigationBarBackgroundColor: '@navBgColor',
     navigationBarTextStyle: '@navTxtStyle',
-    navigationBarTitleText: '青创农服',
+    navigationBarTitleText: '遇见语录',
     backgroundColor: '@bgColor',
     backgroundTextStyle: '@bgTxtStyle',
     backgroundColorTop: '@bgColorTop',

@@ -1,6 +1,6 @@
 <template>
     <view class="form-list">
-        <view class="form-list-title">成为青创农服</view>
+        <view class="form-list-title">成为遇见语录</view>
         <view class="form-list-content">
             <view class="content-title">
                 请完善以下证件信息

@@ -14,6 +14,11 @@
     align-items: center;
     justify-content: $content;
 }
+@mixin flex() {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 @mixin title() {
     font-size: $title-size;
     color: $title-color;
